@@ -94,15 +94,21 @@ export class Visual implements IVisual {
         }
         this.target.onmouseout = () => {
             this.handleMouseOver(false);
-        }        
+        } 
+        this.target.onclick = () => {
+            this.handleClick();
+        }       
         if (document) {
 
         }
     }
+    public handleClick(){
+        if (this.visualSettings.actionSettings.show == true && this.visualSettings.actionSettings.url != "")
+            this.host.launchUrl('https://www.google.com');
+    }
 
     public handleMouseOver(isMouseOver:boolean)
     {
-        console.log(isMouseOver);
         if (isMouseOver)
         {
             this.textBox.style.color = this.visualSettings.textSettings.getHoverColor().toString();
@@ -170,6 +176,7 @@ export class Visual implements IVisual {
         var test = this.svgContainer.getElementsByTagName('svg');
         test[0].style.height = "100%";
         test[0].style.width = "100%";
+        test[0].style.fill = this.visualSettings.iconSettings.iconColor.toString();
         //insert css fill style for icon color here
     }
     private drawTextBox()
@@ -255,8 +262,8 @@ export class Visual implements IVisual {
             case 'iconSettings':
                 return this.enumerateIconSettings();
             break;
-                 default:
-                     return VisualSettings.enumerateObjectInstances(settings, options);
+            default:
+                return VisualSettings.enumerateObjectInstances(settings, options);
              }
          return objectEnumeration;
         //return VisualSettings.enumerateObjectInstances(settings, options);
@@ -270,7 +277,6 @@ export class Visual implements IVisual {
             },
             selector: null
         });
-
         switch (this.visualSettings.iconSettings.iconFamily){
             case "Buildings":
                 objectEnumeration.push({
@@ -426,6 +432,13 @@ export class Visual implements IVisual {
                 });
                 break;
         }
+        objectEnumeration.push({
+            objectName: "iconColor",
+            properties:{
+                iconColor: this.visualSettings.iconSettings.iconColor
+            },
+            selector: null
+        });
         return objectEnumeration;
     }
 

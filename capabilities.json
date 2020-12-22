@@ -158,6 +158,12 @@
         "iconSettings": {
             "displayName": "Icon",
             "properties": {
+                "iconColor": {
+                    "description": "Icon color",
+                    "displayName": "Icon Color",
+                    "type": {"fill": {"solid": {"color": true}}
+                    }
+                },
                 "iconFamily":{
                     "displayName": "Icon Family",
                     "type":{"enumeration":[
@@ -2523,6 +2529,22 @@
                             {"displayName": "windy-line","value": "windy-line"}
                         ]}}
                     
+                }
+            },
+            "actionSettings":{
+                "displayName": "Action",
+                "properties": {
+                    "show": {
+                        "displayName": "Show",
+                        "type": {"bool": true}
+                    },
+                    "url":{
+                        "displayName":"Link URL",
+                        "description": "Full URL path a click will link to",
+                        "type":{
+                            "text":true
+                        }
+                    }
                 }
             }
     }
