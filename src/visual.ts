@@ -1,28 +1,3 @@
-/*
-*  Power BI Visual CLI
-*
-*  Copyright (c) Microsoft Corporation
-*  All rights reserved.
-*  MIT License
-*
-*  Permission is hereby granted, free of charge, to any person obtaining a copy
-*  of this software and associated documentation files (the ""Software""), to deal
-*  in the Software without restriction, including without limitation the rights
-*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*  copies of the Software, and to permit persons to whom the Software is
-*  furnished to do so, subject to the following conditions:
-*
-*  The above copyright notice and this permission notice shall be included in
-*  all copies or substantial portions of the Software.
-*
-*  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*  THE SOFTWARE.
-*/
 "use strict";
 
 import "core-js/stable";
@@ -50,9 +25,12 @@ import { iconLibrary } from "./icondata";
 import * as d3 from "d3";
 import { DataViewProperties } from "powerbi-visuals-utils-dataviewutils/lib/dataViewObjectsParser";
 import { now } from "d3";
-//import { Map } from "d3";
+import IVisualEventService = powerbi.extensibility.IVisualEventService;
+
+type Selection<T extends d3.BaseType> = d3.Selection<T, any, any, any>;
 
 export class Visual implements IVisual {
+    private events: IVisualEventService ;
     private target: HTMLElement;
     //private svg: d3.Selection<SVGElement, {}, HTMLElement, any>;
     private updateCount: number;
@@ -70,7 +48,7 @@ export class Visual implements IVisual {
     private textBoxContainer:HTMLElement;
     private textBox:HTMLElement;
     private svgContainer:HTMLElement;
-    private svg:HTMLElement;
+    private svg:Selection<SVGElement>;
     
 
     constructor(options: VisualConstructorOptions) {
@@ -84,10 +62,15 @@ export class Visual implements IVisual {
         this.target.appendChild(this.textBoxContainer);
         this.svgContainer = document.createElement('div');
         this.target.appendChild(this.svgContainer);
+        this.svg = d3.select(this.svgContainer).append('svg')
+        this.svg.attr('xmlns','http://www.w3.org/2000/svg');
+        this.svg.attr('viewBox','0 0 24 24');
+        //<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 
         this.textBoxContainer.style.position = "absolute";        
         this.textBox.style.position = "absolute";
         this.svgContainer.style.position = "absolute";
+        this.events = options.host.eventService;
         //setup mouse events
         this.target.onmouseover = () => {
             this.handleMouseOver(true);
@@ -112,7 +95,7 @@ export class Visual implements IVisual {
         if (isMouseOver)
         {
             this.textBox.style.color = this.visualSettings.textSettings.getHoverColor().toString();
-            this.textBox.innerHTML = this.visualSettings.textSettings.getHoverText();
+            this.textBox.textContent = this.visualSettings.textSettings.getHoverText();
             this.textBox.style.padding = this.visualSettings.textSettings.getHoverPadding().toString() + "px";
             this.textBox.style.fontFamily = this.visualSettings.textSettings.getHoverFontFamily();
             this.textBox.style.fontWeight = (this.visualSettings.textSettings.getHoverBold())?"Bold":"normal";
@@ -121,7 +104,7 @@ export class Visual implements IVisual {
         else
         {
             this.textBox.style.color = this.visualSettings.textSettings.defaultTextColor.toString();
-            this.textBox.innerHTML = this.visualSettings.textSettings.text;
+            this.textBox.textContent = this.visualSettings.textSettings.text;
             this.textBox.style.padding = this.visualSettings.textSettings.textPadding + "px";
             this.textBox.style.fontFamily = this.visualSettings.textSettings.fontFamily;
             this.textBox.style.fontWeight = (this.visualSettings.textSettings.boldText)?"Bold":"normal";
@@ -131,11 +114,14 @@ export class Visual implements IVisual {
     }
 
     public update(options: VisualUpdateOptions) {
+        this.events.renderingStarted(options);
         this.updateOptions = options;
         let dataView: DataView = options.dataViews[0];
         this.visualSettings = Visual.parseSettings(dataView);
         
         this.drawVisual(this.visualSettings.iconSettings.iconFamily);
+        this.events.renderingFinished(options);
+
     }
     private drawVisual(iconFamily: string)
     {
@@ -172,17 +158,15 @@ export class Visual implements IVisual {
         else
             this.svgContainer.style.left = "0px";
         //set icon path details
-        this.svgContainer.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' + iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName()) + '</svg>';
-        var test = this.svgContainer.getElementsByTagName('svg');
-        test[0].style.height = "100%";
-        test[0].style.width = "100%";
-        test[0].style.fill = this.visualSettings.iconSettings.iconColor.toString();
-        //insert css fill style for icon color here
+        this.svg.html(iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName()));
+        this.svg.style('width',"100%");
+        this.svg.style('height',"100%");
+        this.svg.style('fill',this.visualSettings.iconSettings.iconColor.toString());
     }
     private drawTextBox()
     {
         this.textBoxContainer.style.display = "block";
-        this.textBox.innerHTML = this.visualSettings.textSettings.text;
+        this.textBox.textContent = this.visualSettings.textSettings.text;
         this.textBox.style.color = this.visualSettings.textSettings.defaultTextColor.toString();
         this.textBox.style.fontFamily = this.visualSettings.textSettings.fontFamily;        
         this.textBox.style.fontSize = this.visualSettings.textSettings.textSize + "pt";

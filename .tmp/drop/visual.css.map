@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://iconLibrary2ED14D8B4AED4D3384A40EAC399CE900/./style/visual.less"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA","file":"visual.css","sourcesContent":["p {\n  font-size: 20px;\n  font-weight: bold;\n}\np em {\n  background: yellow;\n  padding: 5px;\n}\n"],"sourceRoot":""}
