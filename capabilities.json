@@ -189,6 +189,7 @@
                 "iconBuildings": {
                     "displayName": "Icon",
                     "type": {"enumeration": [
+                        {"displayName": "no selection","value": "no selection"},
                         {"displayName": "ancient-gate-fill","value": "ancient-gate-fill"},
                         {"displayName": "ancient-gate-line","value": "ancient-gate-line"},
                         {"displayName": "ancient-pavilion-fill","value": "ancient-pavilion-fill"},
@@ -249,6 +250,7 @@
                     "iconBusiness": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "advertisement-fill","value": "advertisement-fill"},
                             {"displayName": "advertisement-line","value": "advertisement-line"},
                             {"displayName": "archive-drawer-fill","value": "archive-drawer-fill"},
@@ -425,6 +427,7 @@
                     "iconCommunication": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "chat-1-fill","value": "chat-1-fill"},
                             {"displayName": "chat-1-line","value": "chat-1-line"},
                             {"displayName": "chat-2-fill","value": "chat-2-fill"},
@@ -489,6 +492,7 @@
                     "iconDesign": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "anticlockwise-2-fill","value": "anticlockwise-2-fill"},
                             {"displayName": "anticlockwise-2-line","value": "anticlockwise-2-line"},
                             {"displayName": "anticlockwise-fill","value": "anticlockwise-fill"},
@@ -657,6 +661,7 @@
                     "iconDevelopment": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "braces-fill","value": "braces-fill"},
                             {"displayName": "braces-line","value": "braces-line"},
                             {"displayName": "brackets-fill","value": "brackets-fill"},
@@ -707,6 +712,7 @@
                     "iconDevice": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "airplay-fill","value": "airplay-fill"},
                             {"displayName": "airplay-line","value": "airplay-line"},
                             {"displayName": "barcode-box-fill","value": "barcode-box-fill"},
@@ -871,6 +877,7 @@
                     "iconDocument": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "article-fill","value": "article-fill"},
                             {"displayName": "article-line","value": "article-line"},
                             {"displayName": "bill-fill","value": "bill-fill"},
@@ -1075,6 +1082,7 @@
                     "iconEditor": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "a-b","value": "a-b"},
                             {"displayName": "align-bottom","value": "align-bottom"},
                             {"displayName": "align-center","value": "align-center"},
@@ -1178,6 +1186,7 @@
                     "iconFinance": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "24-hours-fill","value": "24-hours-fill"},
                             {"displayName": "24-hours-line","value": "24-hours-line"},
                             {"displayName": "auction-fill","value": "auction-fill"},
@@ -1314,6 +1323,7 @@
                     "iconHealth": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "capsule-fill","value": "capsule-fill"},
                             {"displayName": "capsule-line","value": "capsule-line"},
                             {"displayName": "dislike-fill","value": "dislike-fill"},
@@ -1378,6 +1388,7 @@
                     "iconLogos": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "alipay-fill","value": "alipay-fill"},
                             {"displayName": "alipay-line","value": "alipay-line"},
                             {"displayName": "amazon-fill","value": "amazon-fill"},
@@ -1572,6 +1583,7 @@
                     "iconMap": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "anchor-fill","value": "anchor-fill"},
                             {"displayName": "anchor-line","value": "anchor-line"},
                             {"displayName": "barricade-fill","value": "barricade-fill"},
@@ -1746,6 +1758,7 @@
                     "iconMedia": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "4k-fill","value": "4k-fill"},
                             {"displayName": "4k-line","value": "4k-line"},
                             {"displayName": "album-fill","value": "album-fill"},
@@ -1946,6 +1959,7 @@
                     "iconOthers": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "basketball-fill","value": "basketball-fill"},
                             {"displayName": "basketball-line","value": "basketball-line"},
                             {"displayName": "bell-fill","value": "bell-fill"},
@@ -2040,6 +2054,7 @@
                     "iconSystem": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "add-box-fill","value": "add-box-fill"},
                             {"displayName": "add-box-line","value": "add-box-line"},
                             {"displayName": "add-circle-fill","value": "add-circle-fill"},
@@ -2342,6 +2357,7 @@
                     "iconUser": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "account-box-fill","value": "account-box-fill"},
                             {"displayName": "account-box-line","value": "account-box-line"},
                             {"displayName": "account-circle-fill","value": "account-circle-fill"},
@@ -2456,6 +2472,7 @@
                     "iconWeather": {
                         "displayName": "Icon",
                         "type": {"enumeration": [
+                            {"displayName": "no selection","value": "no selection"},
                             {"displayName": "blaze-fill","value": "blaze-fill"},
                             {"displayName": "blaze-line","value": "blaze-line"},
                             {"displayName": "celsius-fill","value": "celsius-fill"},
@@ -2538,8 +2555,8 @@
                         "type": {"bool": true}
                     },
                     "url":{
-                        "displayName":"Link URL",
-                        "description": "Full URL path a click will link to",
+                        "displayName":"Link URL, include http(s)://",
+                        "description": "Full URL path a click will link to (include http://)",
                         "type":{
                             "text":true
                         }

@@ -11,6 +11,7 @@ import VisualObjectInstance = powerbi.VisualObjectInstance;
 import DataView = powerbi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
 import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem;
+import ISelectionManager = powerbi.extensibility.ISelectionManager;
 import {
      TooltipEventArgs,
      TooltipEnabledDataPoint,
@@ -32,30 +33,21 @@ type Selection<T extends d3.BaseType> = d3.Selection<T, any, any, any>;
 export class Visual implements IVisual {
     private events: IVisualEventService ;
     private target: HTMLElement;
-    //private svg: d3.Selection<SVGElement, {}, HTMLElement, any>;
-    private updateCount: number;
-    private textNode: Text;
-    private container: HTMLElement;
-    private updateOptions: VisualUpdateOptions;
-    private wasClicked: boolean;
-    private tooltipServiceWrapper: ITooltipServiceWrapper;
     private visualSettings: VisualSettings;
     private host: IVisualHost;
-    private textX: number;
-    private textY:number;
-    private iconX:number;
-    private iconY:number;
     private textBoxContainer:HTMLElement;
     private textBox:HTMLElement;
     private svgContainer:HTMLElement;
     private svg:Selection<SVGElement>;
+    private previewContainer:HTMLElement;
+    private previewTextBox:HTMLElement;
+    private previewGoButton:HTMLElement;
+    private previewIconContainer:HTMLElement;
+    private lastOptions: VisualUpdateOptions;
+    private selectionManager: ISelectionManager;
     
-
-    constructor(options: VisualConstructorOptions) {
-        this.target = options.element;        
-        this.wasClicked = false;
-        this.updateCount = 0;
-        this.host = options.host;
+    private instantiateHTMLElements()
+    {
         this.textBoxContainer = document.createElement('div');
         this.textBox = document.createElement('div');
         this.textBoxContainer.appendChild(this.textBox);
@@ -65,12 +57,55 @@ export class Visual implements IVisual {
         this.svg = d3.select(this.svgContainer).append('svg')
         this.svg.attr('xmlns','http://www.w3.org/2000/svg');
         this.svg.attr('viewBox','0 0 24 24');
-        //<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-
+        
+        //setting up icon preview stuff
+        var previewtextheight:string = "50px";
+        this.previewContainer = document.createElement('div');
+        this.previewContainer.style.width = '100%';        
+        this.previewContainer.style.height = '100%';
+        //this.previewContainer.style.backgroundColor = '#990033';
+        this.previewTextBox = document.createElement('div');
+        this.previewTextBox.style.width = '75%';
+        this.previewTextBox.style.height = previewtextheight;
+        this.previewTextBox.style.position = "absolute";
+        this.previewTextBox.style.fontSize = '26pt';
+        this.previewTextBox.style.backgroundColor = "#ffffff";
+        this.previewTextBox.textContent = "Please select an icon";
+        this.previewTextBox.id = "previewTextBox";
+        this.previewContainer.appendChild(this.previewTextBox);
+        this.previewGoButton = document.createElement('div');
+        this.previewGoButton.style.width = '25%';
+        this.previewGoButton.style.height = previewtextheight;
+        this.previewGoButton.style.position = "absolute";
+        this.previewGoButton.style.right = '0px';
+        this.previewGoButton.style.backgroundColor = '#0a0';
+        this.previewGoButton.textContent = "GO";
+        this.previewGoButton.style.fontSize = '26pt';
+        this.previewGoButton.style.textAlign = 'center';
+        this.previewGoButton.style.fontWeight = 'Bold';
+        this.previewGoButton.style.color = 'White';
+        this.previewContainer.appendChild(this.previewGoButton);
+        this.previewIconContainer = document.createElement('div');
+        this.previewIconContainer.style.width = '100%';
+        this.previewIconContainer.style.position = 'absolute';
+        this.previewIconContainer.style.top = previewtextheight;
+        this.previewIconContainer.style.overflowY = "scroll";
+        this.previewIconContainer.id = "previewIconContainer";
+        this.previewContainer.appendChild(this.previewIconContainer);
+        
         this.textBoxContainer.style.position = "absolute";        
         this.textBox.style.position = "absolute";
         this.svgContainer.style.position = "absolute";
+        this.previewContainer.style.position = 'absolute';
+        this.target.appendChild(this.previewContainer);
+    }
+
+    constructor(options: VisualConstructorOptions) {
+        this.target = options.element; 
+        this.host = options.host;
         this.events = options.host.eventService;
+        this.selectionManager = this.host.createSelectionManager();
+        this.instantiateHTMLElements();        
         //setup mouse events
         this.target.onmouseover = () => {
             this.handleMouseOver(true);
@@ -78,16 +113,96 @@ export class Visual implements IVisual {
         this.target.onmouseout = () => {
             this.handleMouseOver(false);
         } 
-        this.target.onclick = () => {
-            this.handleClick();
-        }       
+        this.textBoxContainer.onclick = (event) => {
+            this.handleClick(event);
+        }  
+        //this.svgContainer.onclick = () => {
+        //    this.handleClick();
+        //} 
+        this.svgContainer.addEventListener("click",(event) => {
+            this.handleClick(event);
+        } )  ;
+        this.previewGoButton.onclick = () => {
+            this.previewGoClick();
+        }   
         if (document) {
 
         }
     }
-    public handleClick(){
+    /* public previewClick(){
+        var updateValue = "Logos";
+        const instance: VisualObjectInstance = {            
+            objectName: "iconSettings",
+            selector: undefined,
+            properties: {
+                iconFamily: updateValue
+            }
+        };
+        //save new setting to the report
+        this.host.persistProperties({
+            merge: [
+                instance
+            ]
+        });        
+        this.host.refreshHostData();
+    } */
+    public handleClick(theEvent:MouseEvent){
         if (this.visualSettings.actionSettings.show == true && this.visualSettings.actionSettings.url != "")
-            this.host.launchUrl('https://www.google.com');
+        {
+             if (this.lastOptions.viewMode == 1) {
+                 const isCtrlPressed: boolean = theEvent.ctrlKey;
+                 if (isCtrlPressed)
+                     this.host.launchUrl(this.visualSettings.actionSettings.url);
+             }
+             else
+                this.host.launchUrl(this.visualSettings.actionSettings.url);
+        }
+    }
+    public previewIconClick(svgIcon:Selection<SVGElement>){
+        var childrens = d3.selectAll("#previewIconContainer svg");
+        childrens.style("background-color","transparent");
+        var theColor = this.visualSettings.iconSettings.iconColor.toString() ;
+        childrens.style("fill",theColor);
+        this.previewTextBox.textContent = svgIcon.data()[0]
+        svgIcon.style("background-color",theColor);
+        svgIcon.style("fill","#ffffff");
+    }
+    public previewGoClick(){
+        var updateValue = this.previewTextBox.textContent;
+        const instance: VisualObjectInstance = {            
+            objectName: "iconSettings",
+            selector: undefined,
+            properties: {
+                iconBuildings: updateValue ,
+                iconBusiness: updateValue,
+                iconCommunication: updateValue,
+                iconDesign: updateValue,
+                iconDevelopment: updateValue,
+                iconDevice: updateValue,
+                iconDocument: updateValue,
+                iconEditor: updateValue,
+                iconFinance: updateValue,
+                iconHealth: updateValue,
+                iconLogos: updateValue,
+                iconMap: updateValue,
+                iconMedia: updateValue,
+                iconOthers: updateValue,
+                iconSettings: updateValue,
+                iconSystem: updateValue,
+                iconUser: updateValue,
+                iconWeather: updateValue 
+            }
+        };
+        //save new setting to the report
+        this.host.persistProperties({
+            merge: [
+                instance
+            ]
+        });     
+        //going to update the viisual just in case we don't get everything updated
+        this.drawVisual(false,updateValue);
+        //force update. Unfortunately this only works in dev mode and not in a packaged file
+        this.host.refreshHostData();
     }
 
     public handleMouseOver(isMouseOver:boolean)
@@ -115,28 +230,79 @@ export class Visual implements IVisual {
 
     public update(options: VisualUpdateOptions) {
         this.events.renderingStarted(options);
-        this.updateOptions = options;
+        this.lastOptions = options;
         let dataView: DataView = options.dataViews[0];
-        this.visualSettings = Visual.parseSettings(dataView);
-        
-        this.drawVisual(this.visualSettings.iconSettings.iconFamily);
+        this.visualSettings = Visual.parseSettings(dataView); 
+        var iconName = this.visualSettings.iconSettings.getActiveIconName(); 
+        var iconValue = this.visualSettings.iconSettings.getActiveIconMap().get(iconName);
+        var isPreview:boolean =  (!iconValue || iconName=="no selection") ?true:false;
+        //var isPreview:boolean = this.visualSettings.iconSettings.getActiveIconName()=="no selection"?true:false;      
+        this.drawVisual(isPreview, iconName);
         this.events.renderingFinished(options);
+    }
+    private setVisibilities(isPreview:boolean)
+    {
+            this.previewContainer.style.display = (isPreview?"block":"none");
+            while (this.previewIconContainer.firstChild) {
+                this.previewIconContainer.removeChild(this.previewIconContainer.lastChild);
+              }
+            this.textBoxContainer.style.display = (isPreview?"none":"block");
+            this.svgContainer.style.display = (isPreview?"none":"block");
+    }
+    private drawVisual(isPreview: boolean, iconName: string)
+    {        
+        this.setVisibilities(isPreview);
+        if (isPreview)
+            this.drawPreview();
+        else
+            this.drawFinal(iconName);        
+    }
+    private drawPreview()
+    {
+        this.previewTextBox.textContent = "Please select an icon";
+        var theMap = this.visualSettings.iconSettings.getActiveIconMap();
+        for (let key of theMap.keys()) {
+            
+            let previewIcon:Selection<SVGElement> = d3.select(this.previewIconContainer).append('svg')
+            previewIcon.attr('xmlns','http://www.w3.org/2000/svg');
+            previewIcon.attr('viewBox','0 0 24 24');
+            previewIcon.html(theMap.get(key));
+            previewIcon.style('width',"10%");
+            // previewIcon.style('height',"100%");
+            previewIcon.style('fill',this.visualSettings.iconSettings.iconColor.toString());
+            previewIcon.data([key]);
+            previewIcon.on("click", () => {
+                this.previewIconClick(previewIcon);
+            }  );
+        }
+        //set sizes
+        this.previewTextBox.style.fontSize = (Math.round(this.previewTextBox.offsetWidth/13.4)).toString() + "pt";
+        this.previewTextBox.style.height = (Math.round(this.previewTextBox.offsetWidth/13.4)*2).toString() + "px";
+        this.previewIconContainer.style.top = this.previewTextBox.offsetHeight.toString() + "px";
+        this.previewIconContainer.style.height = (this.target.offsetHeight - this.previewTextBox.offsetHeight).toString() + "px";
+        
+        this.previewGoButton.style.fontSize = (Math.round(this.previewTextBox.offsetWidth/13.4)).toString() + "pt";
+        this.previewGoButton.style.height = (Math.round(this.previewTextBox.offsetWidth/13.4)*2).toString() + "px";
+        // this.svg.html(iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName()));
+        // this.svg.style('width',"100%");
+        // this.svg.style('height',"100%");
+        // this.svg.style('fill',this.visualSettings.iconSettings.iconColor.toString());
 
     }
-    private drawVisual(iconFamily: string)
-    {
+    private drawFinal(iconName:string)
+    {        
         //first set the textbox style properties and text value
         if (this.visualSettings.textSettings.show)
-            this.drawTextBox();
+        this.drawTextBox();
         else
         {
-            this.textBoxContainer.style.display = "none";
-            this.textBoxContainer.style.width = "0px";
-            this.textBoxContainer.style.height = "0px";
+        //this.textBoxContainer.style.display = "none";
+        this.textBoxContainer.style.width = "0px";
+        this.textBoxContainer.style.height = "0px";
         }
-        this.drawIcon();
+        this.drawIcon(iconName);
     }
-    private drawIcon()
+    private drawIcon(iconName:string)
     {
         //set width and height
         if (this.visualSettings.textSettings.textLocation == "left" || this.visualSettings.textSettings.textLocation == "right"){
@@ -158,14 +324,14 @@ export class Visual implements IVisual {
         else
             this.svgContainer.style.left = "0px";
         //set icon path details
-        this.svg.html(iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName()));
+        this.svg.html(this.visualSettings.iconSettings.getActiveIconMap().get(iconName));
         this.svg.style('width',"100%");
         this.svg.style('height',"100%");
         this.svg.style('fill',this.visualSettings.iconSettings.iconColor.toString());
     }
     private drawTextBox()
     {
-        this.textBoxContainer.style.display = "block";
+        //this.textBoxContainer.style.display = "block";
         this.textBox.textContent = this.visualSettings.textSettings.text;
         this.textBox.style.color = this.visualSettings.textSettings.defaultTextColor.toString();
         this.textBox.style.fontFamily = this.visualSettings.textSettings.fontFamily;        

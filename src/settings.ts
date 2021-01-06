@@ -2,6 +2,7 @@
 
 import { dataViewObjectsParser } from "powerbi-visuals-utils-dataviewutils";
 import DataViewObjectsParser = dataViewObjectsParser.DataViewObjectsParser;
+import * as icondata from "./icondata";
 import powerbi from "powerbi-visuals-api";
 
 export class VisualSettings extends DataViewObjectsParser {
@@ -12,25 +13,25 @@ export class VisualSettings extends DataViewObjectsParser {
       }
 
      export class iconSettings{       
-       public iconColor: powerbi.Fill = { solid: { color: '#000' } };
+       public iconColor: string = '#000000';
        public iconFamily: string = "Buildings";
-       public iconBuildings: string = "ancient-gate-fill";
-       public iconBusiness: string = "advertisement-fill";
-       public iconCommunication: string = "chat-1-fill";
-       public iconDesign: string = "anticlockwise-2-fill";
-       public iconDevelopment: string = "braces-fill";
-       public iconDevice: string = "airplay-fill";
-       public iconDocument: string = "article-fill";
-       public iconEditor: string = "a-b";
-       public iconFinance: string = "24-hours-fill";
-       public iconHealth: string = "capsule-fill";
-       public iconLogos: string = "alipay-fill";
-       public iconMap: string = "anchor-fill";
-       public iconMedia: string = "4k-fill";
-       public iconOthers: string = "basketball-fill";
-       public iconSystem: string = "add-box-fill";
-       public iconUser: string = "account-box-fill";
-       public iconWeather: string = "blaze-fill";
+       public iconBuildings: string = "no selection";
+       public iconBusiness: string = "no selection";
+       public iconCommunication: string = "no selection";
+       public iconDesign: string = "no selection";
+       public iconDevelopment: string = "no selection";
+       public iconDevice: string = "no selection";
+       public iconDocument: string = "no selection";
+       public iconEditor: string = "no selection";
+       public iconFinance: string = "no selection";
+       public iconHealth: string = "no selection";
+       public iconLogos: string = "no selection";
+       public iconMap: string = "no selection";
+       public iconMedia: string = "no selection";
+       public iconOthers: string = "no selection";
+       public iconSystem: string = "no selection";
+       public iconUser: string = "no selection";
+       public iconWeather: string = "no selection";
        public getActiveIconName():string{
         switch (this.iconFamily){
         case "Buildings":
@@ -67,6 +68,44 @@ export class VisualSettings extends DataViewObjectsParser {
             return this.iconUser;
           case "Weather":
             return this.iconWeather;
+      }
+       }
+       public getActiveIconMap():Map<string,string>{
+        switch (this.iconFamily){
+        case "Buildings":
+          return icondata.iconLibraryBuildings;
+          case "Business":
+            return icondata.iconLibraryBusiness;
+          case "Communication":
+            return icondata.iconLibraryCommunication;
+          case "Design":
+            return icondata.iconLibraryDesign;
+          case "Development":
+            return icondata.iconLibraryDevelopment;
+          case "Device":
+            return icondata.iconLibraryDevice;
+          case "Document":
+            return icondata.iconLibraryDocument;
+          case "Editor":
+            return icondata.iconLibraryEditor;
+          case "Finance":
+            return icondata.iconLibraryFinance;
+          case "Health":
+            return icondata.iconLibraryHealth;
+          case "Logos":
+            return icondata.iconLibraryLogos;
+          case "Map":
+            return icondata.iconLibraryMap;
+          case "Media":
+            return icondata.iconLibraryMedia;
+          case "Others":
+            return icondata.iconLibraryOthers;
+          case "System":
+            return icondata.iconLibrarySystem;
+          case "User":
+            return icondata.iconLibraryUser;
+          case "Weather":
+            return icondata.iconLibraryWeather;
       }
        }
      }
