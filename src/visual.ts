@@ -169,40 +169,129 @@ export class Visual implements IVisual {
     }
     public previewGoClick(){
         var updateValue = this.previewTextBox.textContent;
-        const instance: VisualObjectInstance = {            
+        this.updateIconSettings(this.visualSettings.iconSettings.iconFamily, updateValue);        
+        //going to update the viisual just in case we don't get everything updated
+        this.drawVisual(false,updateValue);
+        //update the in memory iconName
+        this.previewTextBox.setAttribute("data-value",updateValue);
+        this.visualSettings.iconSettings.iconBuildings = updateValue;
+        this.visualSettings.iconSettings.iconBusiness = updateValue;
+        this.visualSettings.iconSettings.iconCommunication = updateValue;
+        this.visualSettings.iconSettings.iconDesign = updateValue;
+        this.visualSettings.iconSettings.iconDevelopment = updateValue;
+        this.visualSettings.iconSettings.iconDevice = updateValue;
+        this.visualSettings.iconSettings.iconDocument = updateValue;
+        this.visualSettings.iconSettings.iconEditor = updateValue;
+        this.visualSettings.iconSettings.iconFinance = updateValue;
+        this.visualSettings.iconSettings.iconHealth = updateValue;
+        this.visualSettings.iconSettings.iconLogos = updateValue;
+        this.visualSettings.iconSettings.iconMap = updateValue;
+        this.visualSettings.iconSettings.iconMedia = updateValue;
+        this.visualSettings.iconSettings.iconOthers = updateValue;
+        this.visualSettings.iconSettings.iconSystem = updateValue;
+        this.visualSettings.iconSettings.iconUser = updateValue;
+        this.visualSettings.iconSettings.iconWeather = updateValue;
+        //force update. Unfortunately this only works in dev mode and not in a packaged file
+        //this.host.refreshHostData();
+    }
+    private updateIconSettings(iconFamily:string,iconName:string)
+    {
+        var instance: VisualObjectInstance = {            
             objectName: "iconSettings",
             selector: undefined,
             properties: {
-                iconBuildings: updateValue ,
-                iconBusiness: updateValue,
-                iconCommunication: updateValue,
-                iconDesign: updateValue,
-                iconDevelopment: updateValue,
-                iconDevice: updateValue,
-                iconDocument: updateValue,
-                iconEditor: updateValue,
-                iconFinance: updateValue,
-                iconHealth: updateValue,
-                iconLogos: updateValue,
-                iconMap: updateValue,
-                iconMedia: updateValue,
-                iconOthers: updateValue,
-                iconSettings: updateValue,
-                iconSystem: updateValue,
-                iconUser: updateValue,
-                iconWeather: updateValue 
+                iconBuildings: "no selection",
+                iconBusiness: "no selection",
+                iconCommunication: "no selection",
+                iconDesign: "no selection",
+                iconDevelopment: "no selection",
+                iconDevice: "no selection",
+                iconDocument: "no selection",
+                iconEditor: "no selection",
+                iconFinance: "no selection",
+                iconHealth: "no selection",
+                iconLogos: "no selection",
+                iconMap: "no selection",
+                iconMedia: "no selection",
+                iconOthers: "no selection",
+                iconSystem: "no selection",
+                iconUser: "no selection",
+                iconWeather: "no selection" 
             }
         };
-        //save new setting to the report
-        this.host.persistProperties({
-            merge: [
-                instance
-            ]
-        });     
-        //going to update the viisual just in case we don't get everything updated
-        this.drawVisual(false,updateValue);
-        //force update. Unfortunately this only works in dev mode and not in a packaged file
-        this.host.refreshHostData();
+        this.host.persistProperties({merge: [instance]}); 
+        switch (iconFamily) {
+            case 'Buildings':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconBuildings: iconName}};
+            break;
+            case 'Business':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconBusiness: iconName}};
+            break;
+            case 'Communication':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconCommunication: iconName}};
+            break;
+            case 'Design':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconDesign: iconName}};
+            break;
+            case 'Development':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconDevelopment: iconName}};
+            break;
+            case 'Device':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconDevice: iconName}};
+            break;
+            case 'Document':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconDocument: iconName}};
+            break;
+            case 'Editor':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconEditor: iconName}};
+            break;
+            case 'Finance':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconFinance: iconName}};
+            break;
+            case 'Health':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconHealth: iconName}};
+            break;
+            case 'Logos':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconLogos: iconName}};
+            break;
+            case 'Map':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconMap: iconName}};
+            break;
+            case 'Media':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconMedia: iconName}};
+            break;
+            case 'Others':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconOthers: iconName}};
+            break;
+            case 'System':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconSystem: iconName}};
+            break;
+            case 'User':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconUser: iconName}};
+            break;
+            case 'Weather':                      
+                instance = {objectName: "iconSettings",selector: undefined,
+                    properties: {iconWeather: iconName}};
+            break;
+             } 
+             
+        this.host.persistProperties({merge: [instance]}); 
     }
 
     public handleMouseOver(isMouseOver:boolean)
@@ -232,8 +321,19 @@ export class Visual implements IVisual {
         this.events.renderingStarted(options);
         this.lastOptions = options;
         let dataView: DataView = options.dataViews[0];
-        this.visualSettings = Visual.parseSettings(dataView); 
-        var iconName = this.visualSettings.iconSettings.getActiveIconName(); 
+        this.visualSettings = Visual.parseSettings(dataView);
+        //if not a resize event clear existing saved data point
+        if (!(options.type == 4 || options.type == 32 || options.type == 36))
+            this.previewTextBox.removeAttribute("data-value");
+        var iconNameFromVisual = this.previewTextBox.getAttribute("data-value");
+        var iconNameFromSettings = this.visualSettings.iconSettings.getActiveIconName();
+        //debugger;
+        var iconName:string = "";
+        //you want to use the existing saved data point if it exists and its a resize        
+        if (iconNameFromVisual != null && (options.type == 4 || options.type == 32 || options.type == 36))
+            iconName = iconNameFromVisual;
+        else
+            iconName = iconNameFromSettings; 
         var iconValue = this.visualSettings.iconSettings.getActiveIconMap().get(iconName);
         var isPreview:boolean =  (!iconValue || iconName=="no selection") ?true:false;
         //var isPreview:boolean = this.visualSettings.iconSettings.getActiveIconName()=="no selection"?true:false;      
