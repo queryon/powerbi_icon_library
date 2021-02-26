@@ -13,7 +13,9 @@ export class VisualSettings extends DataViewObjectsParser {
       }
 
      export class iconSettings{       
-       public iconColor: string = '#000000';
+       private iconColor: string = '#000000' ;
+       private iconHoverColor: string = null;
+       public iconLibrary: string = "remix";
        public iconFamily: string = "Buildings";
        public iconBuildings: string = "no selection";
        public iconBusiness: string = "no selection";
@@ -32,6 +34,19 @@ export class VisualSettings extends DataViewObjectsParser {
        public iconSystem: string = "no selection";
        public iconUser: string = "no selection";
        public iconWeather: string = "no selection";
+       public controlState:string="default";
+
+       public getIconColor(state:string="default"){
+        switch (state){
+          case "default":
+            return this.iconColor;
+          case "hover":
+            return this.getHoverColor();
+        }}
+       private getHoverColor():string{
+        return (this.iconHoverColor == null)?this.iconColor:this.iconHoverColor;
+      }
+
        public getActiveIconName():string{
         switch (this.iconFamily){
         case "Buildings":
@@ -115,39 +130,126 @@ export class VisualSettings extends DataViewObjectsParser {
      }
     export class textSettings{
       public show:boolean = false;
-      public textLocation: string = "top";
-      public verticalAlignment: string = "top";
-      public horTextAlign: string = "left";
-      public textWidth:number = 50;
-      public textSize: number = 12;
-      public fontSize: number = null;
-      public defaultTextColor: powerbi.Fill = { solid: { color: '#000' } };
-      public hoverTextColor: powerbi.Fill = null;
-      public fontFamily: string =  "Arial";
-      public hoverFontFamily: string =  null;
-      public boldText: boolean = false;
-      public hoverBoldText: boolean = null;
-      public textPadding:number=0;
-      public hoverTextPadding:number = null;
-      public text:string="";
-      public hoverText:string=null;
+      private textLocation: string = "top";
+      private hoverTextLocation: string = null;
+      private verticalAlignment: string = "top";
+      private hoverVerticalAlignment: string = null;
+      private horTextAlign: string = "left";
+      private hoverHorTextAlign: string = null;
+      private textWidth:number = 50;
+      private hoverTextWidth:number = null;
+      private textSize: number = 12;
+      private fontSize: number = null;//this is for hover state the naming is changed to utilize the built in font size control
+      private defaultTextColor: powerbi.Fill = { solid: { color: '#000' } };
+      private hoverTextColor: powerbi.Fill = null;
+      private fontFamily: string =  "Arial";
+      private hoverFontFamily: string =  null;
+      private boldText: boolean = false;
+      private hoverBoldText: boolean = null;
+      private textPadding:number=0;
+      private hoverTextPadding:number = null;
+      private text:string="";
+      private hoverText:string=null;
       public controlState:string="default";
-      public getHoverColor():powerbi.Fill{
+
+      public getTextLocation(state:string="default"){
+        switch (state){
+          case "default":
+            return this.textLocation;
+          case "hover":
+            return this.getHoverTextLocation();
+        }}
+        public getTextVertAlign(state:string="default"){
+          switch (state){
+            case "default":
+              return this.verticalAlignment;
+            case "hover":
+              return this.getHoverVerticalAlignment();
+          }}
+        public getTextHorAlign(state:string="default"){
+          switch (state){
+            case "default":
+              return this.horTextAlign;
+            case "hover":
+              return this.getHoverHorizontalAlignment();
+          }}
+        public getTextWidth(state:string="default"){
+          switch (state){
+            case "default":
+              return this.textWidth;
+            case "hover":
+              return this.getHoverTextWidth();
+          }}
+        public getTextSize(state:string="default"){
+          switch (state){
+            case "default":
+              return this.textSize;
+            case "hover":
+              return this.getHoverTextSize();
+          }}
+      public getTextColor(state:string="default"){
+        switch (state){
+          case "default":
+            return this.defaultTextColor;
+          case "hover":
+            return this.getHoverColor();
+        }}
+        public getFontFamily(state:string="default"){
+          switch (state){
+            case "default":
+              return this.fontFamily;
+            case "hover":
+              return this.getHoverFontFamily();
+          }}
+        public getBoldText(state:string="default"){
+          switch (state){
+            case "default":
+              return this.boldText;
+            case "hover":
+              return this.getHoverBold();
+          }}
+        public getPadding(state:string="default"){
+          switch (state){
+            case "default":
+              return this.textPadding;
+            case "hover":
+              return this.getHoverPadding();
+          }}
+        public getText(state:string="default"){
+          switch (state){
+            case "default":
+              return this.text;
+            case "hover":
+              return this.getHoverText();
+          }}
+      private getHoverColor():powerbi.Fill{
         return (this.hoverTextColor == null)?this.defaultTextColor:this.hoverTextColor;
       }
-      public getHoverText():string{
+      private getHoverText():string{
           return (this.hoverText == null)?this.text:this.hoverText;
       }
-      public getHoverPadding():number{
+      private getHoverPadding():number{
           return (this.hoverTextPadding == null)?this.textPadding:this.hoverTextPadding;
       } 
-      public getHoverTextSize():number{
+      private getHoverTextSize():number{
           return (this.fontSize == null)?this.textSize:this.fontSize;
       } 
-      public getHoverFontFamily():string{
+      private getHoverFontFamily():string{
           return (this.hoverFontFamily == null)?this.fontFamily:this.hoverFontFamily;
       } 
-      public getHoverBold():boolean{
+      private getHoverBold():boolean{
           return (this.hoverBoldText == null)?this.boldText:this.hoverBoldText;
+      } 
+      private getHoverTextLocation():string{
+          return (this.hoverTextLocation == null)?this.textLocation:this.hoverTextLocation;
+      }
+      private getHoverVerticalAlignment():string{
+          return (this.hoverVerticalAlignment == null)?this.verticalAlignment:this.hoverVerticalAlignment;
+      }
+      private getHoverHorizontalAlignment():string{
+          return (this.hoverHorTextAlign == null)?this.horTextAlign:this.hoverHorTextAlign;
+      }
+      private getHoverTextWidth():number{
+          return (this.hoverTextWidth == null)?this.textWidth:this.hoverTextWidth;
       } 
     }

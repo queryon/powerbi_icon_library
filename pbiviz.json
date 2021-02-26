@@ -2,8 +2,8 @@
     "visual":{
         "name":"iconLibrary",
         "displayName":"Icon Library",
-        "guid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE907",
-        "oldGuid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE95D",
+        "guid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE908",
+        "prodGuid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE95D",
         "visualClassName":"Visual",
         "version":"1.0.0",
         "description":"Icon Library for inserting icons into Power BI reports",
@@ -17,7 +17,7 @@
         "assets":{
             "icon":"assets/icon.png"
         },
-        "externalJS":null,
+        "externalJS":[],
         "style":"style/visual.less",
         "capabilities":"capabilities.json",
         "dependencies":null,

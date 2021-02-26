@@ -31,12 +31,34 @@
                     "displayName": "Text width",
                     "type": {"formatting": {"fontSize": true}}
                 },
+                "hoverTextWidth": {
+                    "description": "Default text width",
+                    "displayName": "Text width",
+                    "type": {"formatting": {"fontSize": true}}
+                },
                 "verticalAlignment": {
                     "description": "Default vertical alignment",
                     "displayName": "Vertical alignment",
-                    "type": {"formatting": {"alignment": true}}
+                    "type": {"enumeration": [
+                        {"displayName": "Top","value": "top"},
+                    {"displayName": "Middle","value": "middle"},
+                    {"displayName": "Bottom","value": "bottom"}
+                ]}
+                },
+                "hoverVerticalAlignment": {
+                    "description": "Default vertical alignment",
+                    "displayName": "Vertical alignment",
+                    "type": {"enumeration": [
+                        {"displayName": "Top","value": "top"},
+                    {"displayName": "Middle","value": "middle"},
+                    {"displayName": "Bottom","value": "bottom"}
+                ]}
                 },
                 "horTextAlign": {
+                    "displayName": "Horizontal alignment",
+                    "type": {"formatting": {"alignment": true}}
+                },
+                "hoverHorTextAlign": {
                     "displayName": "Horizontal alignment",
                     "type": {"formatting": {"alignment": true}}
                 },
@@ -51,6 +73,17 @@
                     "type": {"bool": true}
                 },
                 "textLocation": {
+                    "displayName": "Text Location",
+                    "type": {
+                        "enumeration": [
+                            {"displayName": "Top","value": "top"},
+                        {"displayName": "Bottom","value": "bottom"},
+                        {"displayName": "Left","value": "left"},
+                        {"displayName": "Right","value": "right"}
+                    ]
+                    }
+                },
+                "hoverTextLocation": {
                     "displayName": "Text Location",
                     "type": {
                         "enumeration": [
@@ -156,13 +189,36 @@
         },
         "iconSettings": {
             "displayName": "Icon",
-            "properties": {
+            "properties": {                
+                "controlState":{
+                    "displayName":" ",
+                    "type":{
+                        "enumeration": [
+                            {"displayName":"Default state","value":"default"},
+                        {"displayName":"On Hover","value":"onhover"}
+                    ]
+                    }
+                },
                 "iconColor": {
                     "description": "Icon color",
                     "displayName": "Icon Color",
                     "type": {"fill": {"solid": {"color": true}}
                     }
                 },
+                "iconHoverColor": {
+                    "description": "Icon hover color",
+                    "displayName": "Icon Hover Color",
+                    "type": {"fill": {"solid": {"color": true}}
+                    }
+                },
+                "iconLibrary":{
+                    "displayName": "Icon Library",
+                    "type":{"enumeration":[
+                            {"displayName":"Remix Icons","value":"remix"},                            
+                            {"displayName":"","value":""}
+                            ]
+                    }
+                },  
                 "iconFamily":{
                     "displayName": "Icon Family",
                     "type":{"enumeration":[
