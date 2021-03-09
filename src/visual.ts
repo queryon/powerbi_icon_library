@@ -80,7 +80,7 @@ export class Visual implements IVisual {
         this.previewGoButton.style.height = previewtextheight;
         this.previewGoButton.style.position = "absolute";
         this.previewGoButton.style.right = '0px';
-        this.previewGoButton.style.backgroundColor = '#0a0';
+        this.previewGoButton.style.backgroundColor = '#00BAAE';
         this.previewGoButton.textContent = "GO";
         this.previewGoButton.style.fontSize = '26pt';
         this.previewGoButton.style.textAlign = 'center';
@@ -101,7 +101,7 @@ export class Visual implements IVisual {
         this.changeIconButton.style.height = previewtextheight;
         this.changeIconButton.style.position = "absolute";
         this.changeIconButton.style.right = '0px';
-        this.changeIconButton.style.backgroundColor = '#0a0';
+        this.changeIconButton.style.backgroundColor = '#00BAAE';
         this.changeIconButton.textContent = "CHANGE ICON";
         this.changeIconButton.style.fontSize = '26pt';
         this.changeIconButton.style.textAlign = 'center';
@@ -151,6 +151,7 @@ export class Visual implements IVisual {
         }
     }
     public resetIconSelection(){
+
         this.drawVisual(true, "no selection");
     }
     // Handle context menu - right click 
@@ -210,6 +211,7 @@ export class Visual implements IVisual {
         this.visualSettings.iconSettings.iconWeather = updateValue;
         //force update. Unfortunately this only works in dev mode and not in a packaged file
         //this.host.refreshHostData();
+        this.changeIconButton.style.display = "block";
     }
     private updateIconSettings(iconFamily:string,iconName:string)
     {
@@ -322,7 +324,17 @@ export class Visual implements IVisual {
         //on mouse over show change icon button if in edit mode
         if (!isPreview)  
         {      
-            this.drawVisual(isPreview,this.visualSettings.iconSettings.getActiveIconName(), state);
+            //the visual needs to be redrawn to use the On Hover effects
+            var iconNameFromVisual = this.previewTextBox.getAttribute("data-value");
+            var iconNameFromSettings = this.visualSettings.iconSettings.getActiveIconName();
+            var iconName:string = "";
+            //you want to use the existing saved data point if it exists       
+            if (iconNameFromVisual != null)
+                iconName = iconNameFromVisual;
+            else
+                iconName = iconNameFromSettings; 
+            //this.drawVisual(isPreview,this.visualSettings.iconSettings.getActiveIconName(), state);
+            this.drawVisual(isPreview,iconName, state);
             this.changeIconButton.style.display = ((isMouseOver && this.lastOptions.viewMode == 1)?"block":"none");
         }
         else
@@ -347,18 +359,51 @@ export class Visual implements IVisual {
         // }
         // this.positionTextBox();
     }
-
+    
     public update(options: VisualUpdateOptions) {
         this.events.renderingStarted(options);
         this.lastOptions = options;
         let dataView: DataView = options.dataViews[0];
         this.visualSettings = Visual.parseSettings(dataView);
+        if(options.type == 32 || options.type == 36)
+        {
+            //debugger;
+            var updateValue = this.previewTextBox.textContent;
+            if (updateValue != "Please select an icon" && updateValue != "no selection" && updateValue != "")
+            {
+            this.updateIconSettings(this.visualSettings.iconSettings.iconFamily, updateValue);
+            this.previewTextBox.setAttribute("data-value",updateValue);
+            this.visualSettings.iconSettings.iconBuildings = updateValue;
+            this.visualSettings.iconSettings.iconBusiness = updateValue;
+            this.visualSettings.iconSettings.iconCommunication = updateValue;
+            this.visualSettings.iconSettings.iconDesign = updateValue;
+            this.visualSettings.iconSettings.iconDevelopment = updateValue;
+            this.visualSettings.iconSettings.iconDevice = updateValue;
+            this.visualSettings.iconSettings.iconDocument = updateValue;
+            this.visualSettings.iconSettings.iconEditor = updateValue;
+            this.visualSettings.iconSettings.iconFinance = updateValue;
+            this.visualSettings.iconSettings.iconHealth = updateValue;
+            this.visualSettings.iconSettings.iconLogos = updateValue;
+            this.visualSettings.iconSettings.iconMap = updateValue;
+            this.visualSettings.iconSettings.iconMedia = updateValue;
+            this.visualSettings.iconSettings.iconOthers = updateValue;
+            this.visualSettings.iconSettings.iconSystem = updateValue;
+            this.visualSettings.iconSettings.iconUser = updateValue;
+            this.visualSettings.iconSettings.iconWeather = updateValue;
+            }
+        }
         //if not a resize event clear existing saved data point
         if (!(options.type == 4 || options.type == 32 || options.type == 36))
             this.previewTextBox.removeAttribute("data-value");
+        // else
+        // {
+        //     //to not lose the setting. save it on a resize
+        //     debugger;
+        //     var updateValue = this.previewTextBox.textContent;
+        //     this.updateIconSettings(this.visualSettings.iconSettings.iconFamily, updateValue); 
+        // }
         var iconNameFromVisual = this.previewTextBox.getAttribute("data-value");
         var iconNameFromSettings = this.visualSettings.iconSettings.getActiveIconName();
-        //debugger;
         var iconName:string = "";
         //you want to use the existing saved data point if it exists and its a resize        
         if (iconNameFromVisual != null && (options.type == 4 || options.type == 32 || options.type == 36))
@@ -367,7 +412,7 @@ export class Visual implements IVisual {
             iconName = iconNameFromSettings; 
         var iconValue = this.visualSettings.iconSettings.getActiveIconMap().get(iconName);
         var isPreview:boolean =  (!iconValue || iconName=="no selection") ?true:false;
-        //var isPreview:boolean = this.visualSettings.iconSettings.getActiveIconName()=="no selection"?true:false;      
+        //var isPreview:boolean = this.visualSettings.iconSettings.getActiveIconName()=="no selection"?true:false; 
         this.drawVisual(isPreview, iconName);
         if(this.renderingFailed) { // Short circuit if data size is too large for view type
             this.events.renderingFailed(options); // Rendering Events API FAIL
@@ -377,7 +422,7 @@ export class Visual implements IVisual {
     }
     private setVisibilities(isPreview:boolean)
     {
-        this.changeIconButton.style.display = (!isPreview?"block":"none");
+        this.changeIconButton.style.display = "none";// (!isPreview?"block":"none");
             this.previewContainer.style.display = (isPreview?"block":"none");
             while (this.previewIconContainer.firstChild) {
                 this.previewIconContainer.removeChild(this.previewIconContainer.lastChild);
@@ -386,7 +431,7 @@ export class Visual implements IVisual {
             this.svgContainer.style.display = (isPreview?"none":"block");
     }
     private drawVisual(isPreview: boolean, iconName: string, state?:string)
-    {        
+    {      
         this.setVisibilities(isPreview);
         if (isPreview)
             this.drawPreview();
@@ -395,7 +440,7 @@ export class Visual implements IVisual {
     }
     private drawPreview()
     {
-        this.previewTextBox.textContent = "Please select an icon";
+        //this.previewTextBox.textContent = "Please select an icon";
         var theMap = this.visualSettings.iconSettings.getActiveIconMap();
         for (let key of theMap.keys()) {
             
@@ -412,6 +457,10 @@ export class Visual implements IVisual {
             previewIcon.on("click", () => {
                 this.previewIconClick(previewIcon);
             }  );
+            if (key == this.previewTextBox.textContent)
+            {
+                this.previewIconClick(previewIcon)
+            }
         }
         //set sizes
         this.previewTextBox.style.fontSize = (Math.round(this.previewTextBox.offsetWidth/13.4)).toString() + "pt";
@@ -431,6 +480,8 @@ export class Visual implements IVisual {
     }
     private drawFinal(iconName:string, state?:string)
     {        
+        //save the iconName for the change button
+        this.previewTextBox.textContent = iconName;
         //set change button size
         //92 and 23 are max sizes
         this.changeIconButton.style.fontSize = Math.min((Math.round(this.target.offsetWidth/25)),23).toString() + "pt";
