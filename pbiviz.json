@@ -2,8 +2,8 @@
     "visual":{
         "name":"Icons by Queryon",
         "displayName":"Icons by Queryon",
-        "testguid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE913",
-        "guid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE95D",
+        "guid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE915",
+        "prodguid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE95F",
         "visualClassName":"Visual",
         "version":"1.0.0",
         "description":"Icon Library for inserting icons into Power BI reports",

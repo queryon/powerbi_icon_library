@@ -719,13 +719,13 @@ export class Visual implements IVisual {
                         text: this.visualSettings.textSettings.getText(),
                         defaultTextColor: this.visualSettings.textSettings.getTextColor(),
                         textPadding: this.visualSettings.textSettings.getPadding(),
-                        textWidth: this.visualSettings.textSettings.getTextWidth(),
+                        textLocation: this.visualSettings.textSettings.getTextLocation(),
                         verticalAlignment: this.visualSettings.textSettings.getTextVertAlign(),
                         horTextAlign: this.visualSettings.textSettings.getTextHorAlign(),
+                        textWidth: this.visualSettings.textSettings.getTextWidth(),
                         textSize: this.visualSettings.textSettings.getTextSize(),
                         fontFamily: this.visualSettings.textSettings.getFontFamily(),
-                        boldText: this.visualSettings.textSettings.getBoldText(),
-                        textLocation: this.visualSettings.textSettings.getTextLocation()
+                        boldText: this.visualSettings.textSettings.getBoldText()
                     },
                     selector: null
                 }); 
@@ -739,13 +739,13 @@ export class Visual implements IVisual {
                         hoverText: this.visualSettings.textSettings.getText("hover"),
                         hoverTextColor: this.visualSettings.textSettings.getTextColor("hover"),
                         hoverTextPadding: this.visualSettings.textSettings.getPadding("hover"),
-                        hoverTextWidth: this.visualSettings.textSettings.getTextWidth("hover"),
+                        hoverTextLocation: this.visualSettings.textSettings.getTextLocation("hover"),
                         hoverVerticalAlignment: this.visualSettings.textSettings.getTextVertAlign("hover"),
                         hoverHorTextAlign: this.visualSettings.textSettings.getTextHorAlign("hover"),
+                        hoverTextWidth: this.visualSettings.textSettings.getTextWidth("hover"),
                         fontSize: this.visualSettings.textSettings.getTextSize("hover"),
                         hoverFontFamily: this.visualSettings.textSettings.getFontFamily("hover"),
-                        hoverBoldText: this.visualSettings.textSettings.getBoldText("hover"),
-                        hoverTextLocation: this.visualSettings.textSettings.getTextLocation("hover")
+                        hoverBoldText: this.visualSettings.textSettings.getBoldText("hover")
                     },
                     selector: null
                 });
