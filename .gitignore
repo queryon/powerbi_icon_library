@@ -1,0 +1,10 @@
+.tmp/
+.tmp/*
+.tmp\*
+dist/
+dist/*
+dist\*
+node_modules/
+node_modules/*
+node_modules\*
+webpack.statistics.prod.html
