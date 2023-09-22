@@ -175,7 +175,7 @@ export class Visual implements IVisual {
 
         //if UseIconNameMeasure
 
-        if(this.visualSettings.iconSettings.getActiveIconName() == "UseIconNameMeasure")
+        if(this.visualSettings.iconSettings.iconFamily == "UseIconNameMeasure")
         {
             this.svg.html(iconLibrary.get(this.icon_name));
 

@@ -388,6 +388,10 @@
                     "displayName": "Icon Family",
                     "type": {
                         "enumeration": [
+                            {
+                                "displayName": "Use Icon Name Measure",
+                                "value": "UseIconNameMeasure"
+                            },
                             
                             {
                                 "displayName": "Buildings",
@@ -464,10 +468,7 @@
                     "displayName": "Icon",
                     "type": {
                         "enumeration": [
-                            {
-                                "displayName": "Use Icon Name Measure",
-                                "value": "UseIconNameMeasure"
-                            },
+                            
                             {
                                 "displayName": "ancient-gate-fill",
                                 "value": "ancient-gate-fill"
@@ -691,10 +692,7 @@
                     "displayName": "Icon",
                     "type": {
                         "enumeration": [
-                            {
-                                "displayName": "Use Icon Name Measure",
-                                "value": "UseIconNameMeasure"
-                            },
+                            
                             {
                                 "displayName": "advertisement-fill",
                                 "value": "advertisement-fill"
