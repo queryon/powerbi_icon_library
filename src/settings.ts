@@ -8,11 +8,10 @@ export class VisualSettings extends DataViewObjectsParser {
       //public dataPoint: dataPointSettings = new dataPointSettings();
       public iconSettings: iconSettings = new iconSettings();
       public textSettings: textSettings = new textSettings();
-      public actionSettings: actionSettings = new actionSettings();
       }
 
      export class iconSettings{       
-       public iconColor: powerbi.Fill = { solid: { color: '#000' } };
+       public iconColor: powerbi.Fill = { solid: { color: '#000000' } };
        public iconFamily: string = "Buildings";
        public iconBuildings: string = "ancient-gate-fill";
        public iconBusiness: string = "advertisement-fill";
@@ -70,10 +69,7 @@ export class VisualSettings extends DataViewObjectsParser {
       }
        }
      }
-     export class actionSettings{
-      public show:boolean = false;
-      public url: string = "";
-     }
+     
     export class textSettings{
       public show:boolean = false;
       public textLocation: string = "top";

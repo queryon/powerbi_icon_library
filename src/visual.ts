@@ -11,6 +11,8 @@ import VisualObjectInstance = powerbi.VisualObjectInstance;
 import DataView = powerbi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
 import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem;
+import VisualEnumerationInstanceKinds = powerbi.VisualEnumerationInstanceKinds;
+
 import {
     TooltipEventArgs,
     TooltipEnabledDataPoint,
@@ -50,6 +52,8 @@ export class Visual implements IVisual {
     private svgContainer: HTMLElement;
     private svg: Selection<SVGElement>;
 
+    private icon_name: string;
+
 
     constructor(visualOptions: VisualConstructorOptions) {
         // Set up options
@@ -84,19 +88,13 @@ export class Visual implements IVisual {
         this.target.onmouseout = () => {
             this.handleMouseOver(false);
         };
-        this.target.onclick = () => {
-            this.handleClick();
-        };
+        
     }
 
-    public handleClick() {
-        if (this.visualSettings.actionSettings.show == true && this.visualSettings.actionSettings.url != "")
-            this.host.launchUrl('https://www.google.com');
-    }
+    
 
     public handleMouseOver(isMouseOver: boolean) {
         if (isMouseOver) {
-            this.textBox.style.color = this.visualSettings.textSettings.getHoverColor().toString();
             this.textBox.textContent = this.visualSettings.textSettings.getHoverText();
             this.textBox.style.padding = this.visualSettings.textSettings.getHoverPadding().toString() + "px";
             this.textBox.style.fontFamily = this.visualSettings.textSettings.getHoverFontFamily();
@@ -113,17 +111,36 @@ export class Visual implements IVisual {
         }
         this.positionTextBox();
     }
-
     public update(options: VisualUpdateOptions) {
+
+        console.log("1");
+
         this.events.renderingStarted(options);
+        console.log("2");
+
         this.updateOptions = options;
         let dataView: DataView = options.dataViews[0];
         this.visualSettings = Visual.parseSettings(dataView);
+        console.log("3");
+
+        let cellValue: string = "";
+        if(dataView.table && dataView.table.rows.length > 0 && dataView.table.columns.length > 0)
+        {
+            const row = dataView.table.rows[0];
+            const column = dataView.table.columns[0];
+            cellValue = row[column.index]?.toString() ?? "";
+        }
+
+        console.log("4");
+
+        console.log(cellValue);
+        this.icon_name = cellValue;
+
 
         this.drawVisual(this.visualSettings.iconSettings.iconFamily);
         this.events.renderingFinished(options);
-
     }
+    
     private drawVisual(iconFamily: string) {
         //first set the textbox style properties and text value
         if (this.visualSettings.textSettings.show)
@@ -155,7 +172,21 @@ export class Visual implements IVisual {
         else
             this.svgContainer.style.left = "0px";
         //set icon path details
-        this.svg.html(iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName()));
+
+        //if UseIconNameMeasure
+
+        if(this.visualSettings.iconSettings.getActiveIconName() == "UseIconNameMeasure")
+        {
+            this.svg.html(iconLibrary.get(this.icon_name));
+
+        }
+        else
+        {
+            this.svg.html(iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName()));
+
+        }
+
+
         this.svg.style('width', "100%");
         this.svg.style('height', "100%");
         this.svg.style('fill', this.visualSettings.iconSettings.iconColor.toString());
@@ -243,31 +274,37 @@ export class Visual implements IVisual {
         //return VisualSettings.enumerateObjectInstances(settings, options);
     }
     private enumerateIconSettings(): VisualObjectInstance[] {
-        // Destructure iconSettings from this.visualSettings
         const { iconSettings } = this.visualSettings;
-
-        // Initialize objectEnumeration array with two objects
         const objectEnumeration: VisualObjectInstance[] = [
             {
                 objectName: "iconSettings",
                 properties: {
                     iconFamily: iconSettings.iconFamily
                 },
-                selector: null
+                selector: null,
+                propertyInstanceKind: {
+                    noDataMessage:
+                        VisualEnumerationInstanceKinds.ConstantOrRule
+                }
             },
             {
                 objectName: "iconColor",
                 properties: {
-                    iconColor: iconSettings.iconColor
+                    iconColor: {
+                        solid: {
+                            color: iconSettings.iconColor
+                        }
+                    }
                 },
-                selector: null
+                selector: null,
+                propertyInstanceKind: {
+                    iconColor: VisualEnumerationInstanceKinds.ConstantOrRule
+                }
             }
         ];
 
-        // Check if iconFamily is truthy
         const iconFamily = iconSettings.iconFamily;
         if (iconFamily) {
-            // Add a new object to objectEnumeration with the corresponding icon property
             objectEnumeration.push({
                 objectName: "iconSettings",
                 properties: {
@@ -277,7 +314,6 @@ export class Visual implements IVisual {
             });
         }
 
-        // Return the objectEnumeration array
         return objectEnumeration;
     }
 

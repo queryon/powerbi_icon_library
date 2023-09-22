@@ -9,7 +9,7 @@
         "description":"Icon Library for inserting icons into Power BI reports",
         "supportUrl":"http://www.queryon.com",
         "gitHubUrl":""},
-        "apiVersion":"3.2.0",
+        "apiVersion":"5.4.0",
         "author":{
             "name":"Allen Geiger",
             "email":"allen.geiger@queryon.com"
