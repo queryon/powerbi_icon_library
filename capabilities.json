@@ -5,6 +5,7 @@
             "name": "iconName",
             "kind": "Measure"
         }
+        
     ],
     "dataViewMappings": [
         {
@@ -13,6 +14,9 @@
                     "select": [
                         {
                             "for": { "in": "iconName" }
+                        },
+                        {
+                            "for": { "in": "customSVG" }
                         }
                     ]
                 }
@@ -9674,7 +9678,8 @@
         
     },
     "privileges": [],
-    "supportsEmptyDataView": true
+    "supportsEmptyDataView": true,
+    "supportsKeyboardFocus": true
 
     
 }

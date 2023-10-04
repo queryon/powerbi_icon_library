@@ -1,25 +1,26 @@
 {
-    "visual":{
-        "name":"iconLibrary",
-        "displayName":"Icon Library",
-        "guid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE901",
-        "oldGuid":"iconLibrary2ED14D8B4AED4D3384A40EAC399CE95D",
-        "visualClassName":"Visual",
-        "version":"1.0.0",
-        "description":"Icon Library for inserting icons into Power BI reports",
-        "supportUrl":"http://www.queryon.com",
-        "gitHubUrl":""},
-        "apiVersion":"5.4.0",
-        "author":{
-            "name":"Allen Geiger",
-            "email":"allen.geiger@queryon.com"
-            },
-        "assets":{
-            "icon":"assets/icon.png"
-        },
-        "externalJS":null,
-        "style":"style/visual.less",
-        "capabilities":"capabilities.json",
-        "dependencies":null,
-        "stringResources":[]
-    }
+    "visual": {
+        "name": "iconLibrary",
+        "displayName": "Icon Library",
+        "guid": "iconLibrary2ED14D8B4AED4D3384A40EAC399CE901",
+        "oldGuid": "iconLibrary2ED14D8B4AED4D3384A40EAC399CE95D",
+        "visualClassName": "Visual",
+        "version": "1.0.0.0",
+        "description": "Icon Library for inserting icons into Power BI reports with dynamic changes",
+        "supportUrl": "http://www.queryon.com",
+        "gitHubUrl": "https://github.com/queryon/powerbi_icon_library"
+    },
+    "apiVersion": "5.4.0",
+    "author": {
+        "name": "Queryon",
+        "email": "hello@queryon.com"
+    },
+    "assets": {
+        "icon": "assets/icon.png"
+    },
+    "externalJS": null,
+    "style": "style/visual.less",
+    "capabilities": "capabilities.json",
+    "dependencies": null,
+    "stringResources": []
+}

@@ -14,6 +14,7 @@
     "d3": "^7.8.5",
     "powerbi-visuals-api": "~5.4.0",
     "powerbi-visuals-utils-dataviewutils": "2.2.1",
+    "powerbi-visuals-utils-interactivityutils": "^6.0.2",
     "powerbi-visuals-utils-tooltiputils": "^2.4.0"
   },
   "devDependencies": {

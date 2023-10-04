@@ -29,6 +29,8 @@ import { DataViewProperties } from "powerbi-visuals-utils-dataviewutils/lib/data
 import { now } from "d3";
 import IVisualEventService = powerbi.extensibility.IVisualEventService;
 
+
+
 type Selection<T extends d3.BaseType> = d3.Selection<T, any, any, any>;
 
 export class Visual implements IVisual {
@@ -53,6 +55,10 @@ export class Visual implements IVisual {
     private svg: Selection<SVGElement>;
 
     private icon_name: string;
+    private icon_svg: string;
+
+
+
 
 
     constructor(visualOptions: VisualConstructorOptions) {
@@ -88,10 +94,16 @@ export class Visual implements IVisual {
         this.target.onmouseout = () => {
             this.handleMouseOver(false);
         };
+
+
         
+
+
     }
 
-    
+  
+
+
 
     public handleMouseOver(isMouseOver: boolean) {
         if (isMouseOver) {
@@ -113,34 +125,49 @@ export class Visual implements IVisual {
     }
     public update(options: VisualUpdateOptions) {
 
-        console.log("1");
 
         this.events.renderingStarted(options);
-        console.log("2");
+
 
         this.updateOptions = options;
         let dataView: DataView = options.dataViews[0];
         this.visualSettings = Visual.parseSettings(dataView);
-        console.log("3");
 
-        let cellValue: string = "";
-        if(dataView.table && dataView.table.rows.length > 0 && dataView.table.columns.length > 0)
-        {
-            const row = dataView.table.rows[0];
-            const column = dataView.table.columns[0];
-            cellValue = row[column.index]?.toString() ?? "";
+
+        let cellValueIconName: string = "";
+        let cellValueSVG: string = "";
+
+        if (dataView.table && dataView.table.rows.length > 0 && dataView.table.columns.length > 0) {
+
+            //This is a SVG
+            if (dataView.table.columns[0].roles.customSVG == true) {
+                const row = dataView.table.rows[0];
+                const column = dataView.table.columns[0];
+                cellValueSVG = row[column.index]?.toString() ?? "";
+            }
+            //This is a Icon Name
+            else {
+                const row = dataView.table.rows[0];
+                const column = dataView.table.columns[0];
+                cellValueIconName = row[column.index]?.toString() ?? "";
+            }
+
+
         }
 
-        console.log("4");
 
-        console.log(cellValue);
-        this.icon_name = cellValue;
+
+
+
+        this.icon_name = cellValueIconName;
+        this.icon_svg = cellValueSVG;
+
 
 
         this.drawVisual(this.visualSettings.iconSettings.iconFamily);
         this.events.renderingFinished(options);
     }
-    
+
     private drawVisual(iconFamily: string) {
         //first set the textbox style properties and text value
         if (this.visualSettings.textSettings.show)
@@ -175,13 +202,15 @@ export class Visual implements IVisual {
 
         //if UseIconNameMeasure
 
-        if(this.visualSettings.iconSettings.iconFamily == "UseIconNameMeasure")
-        {
-            this.svg.html(iconLibrary.get(this.icon_name));
+        if (this.visualSettings.iconSettings.iconFamily == "UseIconNameMeasure") {
+            if (!this.icon_name) {
+                this.svg.html(this.icon_svg);
+            } else {
+                this.svg.html(iconLibrary.get(this.icon_name));
+            }
 
         }
-        else
-        {
+        else {
             this.svg.html(iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName()));
 
         }
