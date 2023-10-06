@@ -10,7 +10,6 @@ import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInst
 import VisualObjectInstance = powerbi.VisualObjectInstance;
 import DataView = powerbi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
-import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem;
 import VisualEnumerationInstanceKinds = powerbi.VisualEnumerationInstanceKinds;
 
 import {
