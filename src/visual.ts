@@ -12,6 +12,9 @@ import DataView = powerbi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
 import VisualEnumerationInstanceKinds = powerbi.VisualEnumerationInstanceKinds;
 
+import ISelectionManager = powerbi.extensibility.ISelectionManager;
+
+
 import {
     TooltipEventArgs,
     TooltipEnabledDataPoint,
@@ -56,16 +59,26 @@ export class Visual implements IVisual {
     private icon_name: string;
     private icon_svg: string;
 
+    private rootSelection: d3.Selection<HTMLElement, any, any, any>;
+    private selectionManager: ISelectionManager;
+
+
 
 
 
 
     constructor(visualOptions: VisualConstructorOptions) {
+
+        
+
+
         // Set up options
         this.target = visualOptions.element;
         this.wasClicked = false;
         this.updateCount = 0;
         this.host = visualOptions.host;
+
+
 
         // Set up text box
         this.textBoxContainer = document.createElement('div');
@@ -93,11 +106,27 @@ export class Visual implements IVisual {
         this.target.onmouseout = () => {
             this.handleMouseOver(false);
         };
+        this.rootSelection = d3.select(this.svgContainer);
 
 
+        this.selectionManager = visualOptions.host.createSelectionManager();
+
+
+        this.handleContextMenu();
         
 
 
+    }
+
+    private handleContextMenu() {
+        this.rootSelection.on('contextmenu', (event: PointerEvent, dataPoint) => {
+            const mouseEvent = event || <MouseEvent>window.event;
+            this.selectionManager.showContextMenu(dataPoint ? dataPoint : {}, {
+                x: mouseEvent.clientX,
+                y: mouseEvent.clientY
+            });
+            mouseEvent.preventDefault();
+        });
     }
 
   
