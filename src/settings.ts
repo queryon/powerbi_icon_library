@@ -12,7 +12,7 @@ export class VisualSettings extends DataViewObjectsParser {
       }
 
      export class iconSettings{       
-       public iconColor: powerbi.Fill = { solid: { color: '#000' } };
+       public iconColor: string = '#000';
        public iconFamily: string = "Buildings";
        public iconBuildings: string = "ancient-gate-fill";
        public iconBusiness: string = "advertisement-fill";

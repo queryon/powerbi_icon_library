@@ -16,19 +16,13 @@ import ISelectionManager = powerbi.extensibility.ISelectionManager;
 
 
 import {
-    TooltipEventArgs,
-    TooltipEnabledDataPoint,
-    createTooltipServiceWrapper,
     ITooltipServiceWrapper,
 } from 'powerbi-visuals-utils-tooltiputils'
-import TooltipShowOptions = powerbi.extensibility.TooltipShowOptions;
 import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 import { VisualSettings } from "./settings";
-import { iconFamilies } from "./icondata";
 import { iconLibrary } from "./icondata";
 import * as d3 from "d3";
-import { DataViewProperties } from "powerbi-visuals-utils-dataviewutils/lib/dataViewObjectsParser";
-import { now } from "d3";
+
 import IVisualEventService = powerbi.extensibility.IVisualEventService;
 
 
@@ -93,9 +87,9 @@ export class Visual implements IVisual {
         this.target.appendChild(this.svgContainer);
         this.svgContainer.style.position = 'absolute';
 
-        // Set up SVG
+        // Use HTTPS protocol for URL
         this.svg = d3.select(this.svgContainer).append('svg')
-            .attr('xmlns', 'http://www.w3.org/2000/svg')
+            .attr('xmlns', 'https://www.w3.org/2000/svg')
             .attr('viewBox', '0 0 24 24');
 
         // Set up events
@@ -126,7 +120,7 @@ export class Visual implements IVisual {
                 y: mouseEvent.clientY
             });
             mouseEvent.preventDefault();
-        });
+        }); 
     }
 
   
@@ -158,7 +152,7 @@ export class Visual implements IVisual {
 
 
         this.updateOptions = options;
-        let dataView: DataView = options.dataViews[0];
+        const dataView: DataView = options.dataViews[0];
         this.visualSettings = Visual.parseSettings(dataView);
 
 
@@ -171,13 +165,13 @@ export class Visual implements IVisual {
             if (dataView.table.columns[0].roles.customSVG == true) {
                 const row = dataView.table.rows[0];
                 const column = dataView.table.columns[0];
-                cellValueSVG = row[column.index]?.toString() ?? "";
+                cellValueSVG = row[column.index] ? row[column.index].toString() : "";
             }
             //This is a Icon Name
             else {
                 const row = dataView.table.rows[0];
                 const column = dataView.table.columns[0];
-                cellValueIconName = row[column.index]?.toString() ?? "";
+                cellValueIconName = row[column.index] ? row[column.index].toString() : "";
             }
 
 
@@ -192,11 +186,12 @@ export class Visual implements IVisual {
 
 
 
-        this.drawVisual(this.visualSettings.iconSettings.iconFamily);
+        this.drawVisual();
         this.events.renderingFinished(options);
     }
 
-    private drawVisual(iconFamily: string) {
+    private drawVisual() {
+
         //first set the textbox style properties and text value
         if (this.visualSettings.textSettings.show)
             this.drawTextBox();
@@ -246,7 +241,7 @@ export class Visual implements IVisual {
 
         this.svg.style('width', "100%");
         this.svg.style('height', "100%");
-        this.svg.style('fill', this.visualSettings.iconSettings.iconColor.toString());
+        this.svg.style('fill', this.visualSettings.iconSettings.iconColor);
     }
     private drawTextBox() {
         this.textBoxContainer.style.display = "block";
@@ -347,11 +342,7 @@ export class Visual implements IVisual {
             {
                 objectName: "iconColor",
                 properties: {
-                    iconColor: {
-                        solid: {
-                            color: iconSettings.iconColor
-                        }
-                    }
+                    iconColor: iconSettings.iconColor  // iconSettings.iconColor is { solid: { color: string } }
                 },
                 selector: null,
                 propertyInstanceKind: {
