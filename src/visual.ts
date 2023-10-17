@@ -14,6 +14,9 @@ import VisualEnumerationInstanceKinds = powerbi.VisualEnumerationInstanceKinds;
 
 import ISelectionManager = powerbi.extensibility.ISelectionManager;
 
+import DOMPurify from 'dompurify';
+
+
 
 import {
     ITooltipServiceWrapper,
@@ -227,7 +230,13 @@ export class Visual implements IVisual {
 
         if (this.visualSettings.iconSettings.iconFamily == "UseIconNameMeasure") {
             if (!this.icon_name) {
-                this.svg.html(this.icon_svg);
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(this.icon_svg, "image/svg+xml");
+                var svgNode = doc.documentElement;
+
+                // Select the container and append the SVG node
+                const container = d3.select("#container").node() as Element;
+                container.appendChild(svgNode);
             } else {
                 this.svg.html(iconLibrary.get(this.icon_name));
             }
@@ -298,7 +307,7 @@ export class Visual implements IVisual {
     }
 
     private static parseSettings(dataView: DataView): VisualSettings {
-        var settings: VisualSettings = <VisualSettings>VisualSettings.parse(dataView);
+        const settings: VisualSettings = <VisualSettings>VisualSettings.parse(dataView);
         return settings;
     }
 
@@ -309,8 +318,8 @@ export class Visual implements IVisual {
      */
     public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
         const settings: VisualSettings = this.visualSettings || <VisualSettings>VisualSettings.getDefault();
-        let objectName: string = options.objectName;
-        let objectEnumeration: VisualObjectInstance[] = [];
+        const objectName: string = options.objectName;
+        const objectEnumeration: VisualObjectInstance[] = [];
 
         switch (objectName) {
             case 'textSettings':
