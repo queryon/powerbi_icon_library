@@ -50,8 +50,10 @@ export class Visual implements IVisual {
     private iconY: number;
     private textBoxContainer: HTMLElement;
     private textBox: HTMLElement;
-    private svgContainer: HTMLElement;
+    private svgContainer: HTMLDivElement;
     private svg: Selection<SVGElement>;
+
+    private svg2: d3.Selection<SVGSVGElement, unknown, null, undefined>;
 
     private icon_name: string;
     private icon_svg: string;
@@ -66,7 +68,7 @@ export class Visual implements IVisual {
 
     constructor(visualOptions: VisualConstructorOptions) {
 
-        
+
 
 
         // Set up options
@@ -89,11 +91,21 @@ export class Visual implements IVisual {
         this.svgContainer = document.createElement('div');
         this.target.appendChild(this.svgContainer);
         this.svgContainer.style.position = 'absolute';
+        this.svgContainer.id = "3345"
 
-        // Use HTTPS protocol for URL
-        this.svg = d3.select(this.svgContainer).append('svg')
-            .attr('xmlns', 'https://www.w3.org/2000/svg')
-            .attr('viewBox', '0 0 24 24');
+
+        //Use HTTPS protocol for URL
+        // this.svg = d3.select(this.svgContainer).append('svg')
+        //     .attr('xmlns', 'https://www.w3.org/2000/svg')
+        //     .attr('viewBox', '0 0 24 24')
+        //     .attr('id', '33466');
+
+
+        // // Setup the SVG to append to the container
+        // this.svg2 = d3.select(this.svgContainer)
+        //     .append('svg')
+        //     .attr('xmlns', 'https://www.w3.org/2000/svg')
+        //     .attr('viewBox', '0 0 24 24')
 
         // Set up events
         this.events = visualOptions.host.eventService;
@@ -110,7 +122,7 @@ export class Visual implements IVisual {
 
 
         this.handleContextMenu();
-        
+
 
 
     }
@@ -123,10 +135,11 @@ export class Visual implements IVisual {
                 y: mouseEvent.clientY
             });
             mouseEvent.preventDefault();
-        }); 
+        });
     }
 
-  
+
+
 
 
 
@@ -226,31 +239,55 @@ export class Visual implements IVisual {
             this.svgContainer.style.left = "0px";
         //set icon path details
 
-        //if UseIconNameMeasure
 
-        if (this.visualSettings.iconSettings.iconFamily == "UseIconNameMeasure") {
-            if (!this.icon_name) {
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(this.icon_svg, "image/svg+xml");
-                var svgNode = doc.documentElement;
 
-                // Select the container and append the SVG node
-                const container = d3.select("#container").node() as Element;
-                container.appendChild(svgNode);
-            } else {
-                this.svg.html(iconLibrary.get(this.icon_name));
-            }
 
+        // Clearing previous SVG content if any. This is to prevent duplication or stacking of SVG elements in the container.
+        while (this.svgContainer.firstChild) {
+            this.svgContainer.removeChild(this.svgContainer.firstChild);
+        }
+
+        let gContent = null;
+
+        if (this.icon_name && this.visualSettings.iconSettings.iconFamily == "UseIconNameMeasure") {
+            gContent = iconLibrary.get(this.icon_name)
         }
         else {
-            this.svg.html(iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName()));
-
+            // Step 1: Retrieve the content for the <g> tag from the icon library. This is the inner part of the SVG that contains the actual graphics.
+            gContent = iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName());
         }
 
 
-        this.svg.style('width', "100%");
-        this.svg.style('height', "100%");
-        this.svg.style('fill', this.visualSettings.iconSettings.iconColor);
+
+
+
+        // Step 2: Construct the complete SVG string by wrapping the <g> content with the <svg> tag. The "xmlns" is the SVG namespace and "viewBox" defines the coordinate system of the SVG.
+        let svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">${gContent}</svg>`;
+
+        // Step 3: Use DOMParser to create an SVG document from the string. This converts the string to an actual SVG DOM element that can be manipulated using JavaScript.
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(svgString, 'image/svg+xml'); // 'image/svg+xml' is the correct MIME type for SVG.
+
+        // Step 4: Check for parsing errors. The 'parsererror' element is present in the parsed document if there's a parsing error.
+        if (doc.querySelector('parsererror')) {
+            // If there's an error, you might want to handle it appropriately in your application's context.
+            return; // Exit the function on error.
+        }
+
+        // Step 5: Append the SVG root element (the <svg> tag) to the target container. This makes the SVG visible in the UI.
+        let svgNode = doc.documentElement; // This should be the root <svg> element.
+        this.svgContainer.appendChild(svgNode);
+
+        // Step 6: Adjusting SVG attributes if necessary. You can set styles or other attributes on the SVG element as needed by your application.
+        svgNode.style.width = '100%';
+        svgNode.style.height = '100%';
+        svgNode.style.fill = this.visualSettings.iconSettings.iconColor.toString();
+
+
+
+        // this.svg.style('width', "100%");
+        // this.svg.style('height', "100%");
+        // this.
     }
     private drawTextBox() {
         this.textBoxContainer.style.display = "block";
