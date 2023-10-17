@@ -14,10 +14,6 @@ import VisualEnumerationInstanceKinds = powerbi.VisualEnumerationInstanceKinds;
 
 import ISelectionManager = powerbi.extensibility.ISelectionManager;
 
-import DOMPurify from 'dompurify';
-
-
-
 import {
     ITooltipServiceWrapper,
 } from 'powerbi-visuals-utils-tooltiputils'
@@ -239,9 +235,6 @@ export class Visual implements IVisual {
             this.svgContainer.style.left = "0px";
         //set icon path details
 
-
-
-
         // Clearing previous SVG content if any. This is to prevent duplication or stacking of SVG elements in the container.
         while (this.svgContainer.firstChild) {
             this.svgContainer.removeChild(this.svgContainer.firstChild);
@@ -257,16 +250,12 @@ export class Visual implements IVisual {
             gContent = iconLibrary.get(this.visualSettings.iconSettings.getActiveIconName());
         }
 
-
-
-
-
         // Step 2: Construct the complete SVG string by wrapping the <g> content with the <svg> tag. The "xmlns" is the SVG namespace and "viewBox" defines the coordinate system of the SVG.
-        let svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">${gContent}</svg>`;
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">${gContent}</svg>`;
 
         // Step 3: Use DOMParser to create an SVG document from the string. This converts the string to an actual SVG DOM element that can be manipulated using JavaScript.
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(svgString, 'image/svg+xml'); // 'image/svg+xml' is the correct MIME type for SVG.
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgString, 'image/svg+xml'); // 'image/svg+xml' is the correct MIME type for SVG.
 
         // Step 4: Check for parsing errors. The 'parsererror' element is present in the parsed document if there's a parsing error.
         if (doc.querySelector('parsererror')) {
@@ -275,7 +264,7 @@ export class Visual implements IVisual {
         }
 
         // Step 5: Append the SVG root element (the <svg> tag) to the target container. This makes the SVG visible in the UI.
-        let svgNode = doc.documentElement; // This should be the root <svg> element.
+        const svgNode = doc.documentElement; // This should be the root <svg> element.
         this.svgContainer.appendChild(svgNode);
 
         // Step 6: Adjusting SVG attributes if necessary. You can set styles or other attributes on the SVG element as needed by your application.
