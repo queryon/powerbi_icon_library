@@ -14,15 +14,20 @@ import VisualEnumerationInstanceKinds = powerbi.VisualEnumerationInstanceKinds;
 
 import ISelectionManager = powerbi.extensibility.ISelectionManager;
 
-import {
-    ITooltipServiceWrapper,
-} from 'powerbi-visuals-utils-tooltiputils'
 import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 import { VisualSettings } from "./settings";
 import { iconLibrary } from "./icondata";
 import * as d3 from "d3";
 
 import IVisualEventService = powerbi.extensibility.IVisualEventService;
+
+import ITooltipService = powerbi.extensibility.ITooltipService;
+import { createTooltipServiceWrapper, ITooltipServiceWrapper, TooltipEventArgs } from "powerbi-visuals-utils-tooltiputils";
+import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem;
+
+
+
+
 
 
 
@@ -37,7 +42,6 @@ export class Visual implements IVisual {
     private container: HTMLElement;
     private updateOptions: VisualUpdateOptions;
     private wasClicked: boolean;
-    private tooltipServiceWrapper: ITooltipServiceWrapper;
     private visualSettings: VisualSettings;
     private host: IVisualHost;
     private textX: number;
@@ -57,15 +61,40 @@ export class Visual implements IVisual {
     private rootSelection: d3.Selection<HTMLElement, any, any, any>;
     private selectionManager: ISelectionManager;
 
+    private tooltipServiceWrapper: ITooltipServiceWrapper; // Add this line
 
 
+    private cellValueTooltip: string = "";
+    private TooltipTitle: string = "";
 
+
+    
+
+    private getTooltipData(): VisualTooltipDataItem[] {
+        if (this.TooltipTitle === "" || this.cellValueTooltip === "") {
+            return null; // Don't return a tooltip item if there's no data
+        }
+    
+        return [{
+            displayName: this.TooltipTitle,
+            value: this.cellValueTooltip,
+        }];
+
+    }
+
+    private bindTooltipToSVG() {
+        // Assuming svgNode is your SVG element
+        this.tooltipServiceWrapper.addTooltip(
+            d3.select(this.svgContainer), // The container to which the tooltip is attached
+            () => this.getTooltipData() // Function to retrieve the tooltip data
+        );
+    }
 
 
     constructor(visualOptions: VisualConstructorOptions) {
 
 
-
+        
 
         // Set up options
         this.target = visualOptions.element;
@@ -116,6 +145,14 @@ export class Visual implements IVisual {
 
         this.selectionManager = visualOptions.host.createSelectionManager();
 
+        console.log("yyyyy");
+
+        // Initialize the Tooltip Service
+        this.tooltipServiceWrapper = createTooltipServiceWrapper(
+            this.host.tooltipService,
+            visualOptions.element
+        );
+
 
         this.handleContextMenu();
 
@@ -160,31 +197,62 @@ export class Visual implements IVisual {
     public update(options: VisualUpdateOptions) {
 
 
+        this.cellValueTooltip = ""
+        this.TooltipTitle = ""
+
         this.events.renderingStarted(options);
 
 
         this.updateOptions = options;
-        const dataView: DataView = options.dataViews[0];
-        this.visualSettings = Visual.parseSettings(dataView);
+        const dataViewIconName: DataView = options.dataViews[0];
+        //const dataViewToolTip: DataView = options.dataViews[1];
+
+        this.visualSettings = Visual.parseSettings(dataViewIconName);
 
 
         let cellValueIconName: string = "";
-        let cellValueSVG: string = "";
+        // let cellValueTooltip: string = "";
+        // let TooltipTitle: string = "";
 
-        if (dataView.table && dataView.table.rows.length > 0 && dataView.table.columns.length > 0) {
 
-            //This is a SVG
-            if (dataView.table.columns[0].roles.customSVG == true) {
-                const row = dataView.table.rows[0];
-                const column = dataView.table.columns[0];
-                cellValueSVG = row[column.index] ? row[column.index].toString() : "";
-            }
+
+        if (dataViewIconName.table && dataViewIconName.table.rows.length > 0 && dataViewIconName.table.columns.length > 0) {
+
+        
             //This is a Icon Name
-            else {
-                const row = dataView.table.rows[0];
-                const column = dataView.table.columns[0];
-                cellValueIconName = row[column.index] ? row[column.index].toString() : "";
+
+            console.log(dataViewIconName)
+            
+        
+
+            try {
+                cellValueIconName = options.dataViews[0].table.rows[0][0]?.toString() || "";
+            } catch (e) {
+                console.error("Error retrieving cellValueIconName:", e);
+                cellValueIconName = ""; // Default value in case of an error
             }
+            
+            try {
+                this.cellValueTooltip = options.dataViews[0].table.rows[0][1]?.toString() || "";
+            } catch (e) {
+                console.error("Error retrieving cellValueTooltip:", e);
+                this.cellValueTooltip = ""; // Default value in case of an error
+            }
+            
+            try {
+                this.TooltipTitle = options.dataViews[0].table.columns[1]?.displayName || "";
+            } catch (e) {
+                console.error("Error retrieving TooltipTitle:", e);
+                this.TooltipTitle = ""; // Default value in case of an error
+            }
+
+
+            console.log(cellValueIconName)
+            console.log(this.cellValueTooltip)
+            console.log(this.TooltipTitle)
+
+
+            
 
 
         }
@@ -194,8 +262,6 @@ export class Visual implements IVisual {
 
 
         this.icon_name = cellValueIconName;
-        this.icon_svg = cellValueSVG;
-
 
 
         this.drawVisual();
@@ -213,6 +279,20 @@ export class Visual implements IVisual {
             this.textBoxContainer.style.height = "0px";
         }
         this.drawIcon();
+
+        if(this.TooltipTitle !== "" && this.cellValueTooltip !== "")
+        {
+            console.log("Asdasdasd")
+            this.bindTooltipToSVG();
+
+        }
+        else
+        {
+            console.log("hidden")
+
+            this.tooltipServiceWrapper.hide();
+        }
+
     }
     private drawIcon() {
         //set width and height

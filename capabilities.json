@@ -4,6 +4,11 @@
             "displayName": "Icon Name",
             "name": "iconName",
             "kind": "Measure"
+        },
+        {
+            "displayName": "Tool Tip",
+            "name": "toolTip",
+            "kind": "Grouping"
         }
         
     ],
@@ -16,7 +21,7 @@
                             "for": { "in": "iconName" }
                         },
                         {
-                            "for": { "in": "customSVG" }
+                            "for": { "in": "toolTip" }
                         }
                     ]
                 }
