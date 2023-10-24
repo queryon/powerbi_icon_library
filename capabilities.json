@@ -4,6 +4,7 @@
             "displayName": "Icon Name",
             "name": "iconName",
             "kind": "Measure"
+            
         },
         {
             "displayName": "Tool Tip",
