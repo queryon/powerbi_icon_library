@@ -15,6 +15,7 @@
     "d3": "^7.8.5",
     "dompurify": "^3.0.6",
     "eslint-plugin-powerbi-visuals": "^0.8.1",
+    "powerbi-models": "^1.13.0",
     "powerbi-visuals-api": "~5.4.0",
     "powerbi-visuals-tools": "5.1.1",
     "powerbi-visuals-utils-dataviewutils": "2.2.1",

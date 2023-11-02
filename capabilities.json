@@ -1,14 +1,10 @@
 {
     "dataRoles": [
+        
+       
         {
-            "displayName": "Icon Name",
-            "name": "iconName",
-            "kind": "Measure"
-            
-        },
-        {
-            "displayName": "Tool Tip",
-            "name": "toolTip",
+            "displayName": "Data Source",
+            "name": "dataSource",
             "kind": "Grouping"
         }
         
@@ -23,6 +19,9 @@
                         },
                         {
                             "for": { "in": "toolTip" }
+                        },
+                        {
+                            "for": { "in": "dataSource" }
                         }
                     ]
                 }
@@ -31,345 +30,36 @@
     ],
     
     "objects": {
-        "textSettings": {
-            "displayName": "Text",
+        "general": {
+            "displayName": "General",
+            "displayNameKey": "formattingGeneral",
             "properties": {
-                "show": {
-                    "displayName": "Show",
+                "filter": {
                     "type": {
-                        "bool": true
+                        "filter": true
                     }
-                },
-                "controlState": {
-                    "displayName": " ",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Default state",
-                                "value": "default"
-                            },
-                            {
-                                "displayName": "On Hover",
-                                "value": "onhover"
-                            }
-                        ]
-                    }
-                },
-                "text": {
-                    "description": "Default state text",
-                    "displayName": "Text",
+                }
+            }
+        },
+        
+        
+        "filterSettings": {
+            "displayName": "Filter",
+            "properties": {
+                "valueToggleOn": {
+                    "displayName": "Value for Toggle On",
                     "type": {
                         "text": true
                     }
                 },
-                "hoverText": {
-                    "description": "On hover text",
-                    "displayName": "Text",
+                "toggleOnToolTip": {
+                    "displayName": "Tool Tip Text",
                     "type": {
                         "text": true
                     }
                 },
-                "textWidth": {
-                    "description": "Default text width",
-                    "displayName": "Text width",
-                    "type": {
-                        "formatting": {
-                            "fontSize": true
-                        }
-                    }
-                },
-                "verticalAlignment": {
-                    "description": "Default vertical alignment",
-                    "displayName": "Vertical alignment",
-                    "type": {
-                        "formatting": {
-                            "alignment": true
-                        }
-                    }
-                },
-                "horTextAlign": {
-                    "displayName": "Horizontal alignment",
-                    "type": {
-                        "formatting": {
-                            "alignment": true
-                        }
-                    }
-                },
-                "boldText": {
-                    "description": "Default bold text",
-                    "displayName": "Bold text",
-                    "type": {
-                        "bool": true
-                    }
-                },
-                "hoverBoldText": {
-                    "description": "On hover bold text",
-                    "displayName": "Bold text",
-                    "type": {
-                        "bool": true
-                    }
-                },
-                "textLocation": {
-                    "displayName": "Text Location",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Top",
-                                "value": "top"
-                            },
-                            {
-                                "displayName": "Bottom",
-                                "value": "bottom"
-                            },
-                            {
-                                "displayName": "Left",
-                                "value": "left"
-                            },
-                            {
-                                "displayName": "Right",
-                                "value": "right"
-                            }
-                        ]
-                    }
-                },
-                "fontFamily": {
-                    "description": "Default font family",
-                    "displayName": "Font family",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Arial",
-                                "value": "Arial"
-                            },
-                            {
-                                "displayName": "Arial Black",
-                                "value": "\"Arial Black\""
-                            },
-                            {
-                                "displayName": "Arial Unicode MS",
-                                "value": "\"Arial Unicode MS\""
-                            },
-                            {
-                                "displayName": "Calibri",
-                                "value": "Calibri"
-                            },
-                            {
-                                "displayName": "Cambria",
-                                "value": "Cambria"
-                            },
-                            {
-                                "displayName": "Cambria Math",
-                                "value": "\"Cambria Math\""
-                            },
-                            {
-                                "displayName": "Candara",
-                                "value": "Candara"
-                            },
-                            {
-                                "displayName": "Comic Sans MS",
-                                "value": "\"Comic Sans MS\""
-                            },
-                            {
-                                "displayName": "Consolas",
-                                "value": "Consolas"
-                            },
-                            {
-                                "displayName": "Constantia",
-                                "value": "Constantia"
-                            },
-                            {
-                                "displayName": "Corbel",
-                                "value": "Corbel"
-                            },
-                            {
-                                "displayName": "Courier New",
-                                "value": "\"Courier New\""
-                            },
-                            {
-                                "displayName": "Georgia",
-                                "value": "Georgia"
-                            },
-                            {
-                                "displayName": "Lucida Sans Unicode",
-                                "value": "\"Lucida Sans Unicode\""
-                            },
-                            {
-                                "displayName": "Segoe (Bold)",
-                                "value": "\"Segoe UI Bold\", wf_segoe-ui_bold, helvetica, arial, sans-serif"
-                            },
-                            {
-                                "displayName": "Segoe UI",
-                                "value": "\"Segoe UI\", wf_segoe-ui_normal, helvetica, arial, sans-serif"
-                            },
-                            {
-                                "displayName": "Segoe UI Light",
-                                "value": "\"Segoe UI Light\", wf_segoe-ui_bold, helvetica, arial, sans-serif"
-                            },
-                            {
-                                "displayName": "Symbol",
-                                "value": "Symbol"
-                            },
-                            {
-                                "displayName": "Tahoma",
-                                "value": "Tahoma"
-                            },
-                            {
-                                "displayName": "Times New Roman",
-                                "value": "\"Times New Roman\""
-                            },
-                            {
-                                "displayName": "Trebuchet MS",
-                                "value": "\"Trebuchet MS\""
-                            },
-                            {
-                                "displayName": "Verdana",
-                                "value": "Verdana"
-                            }
-                        ]
-                    }
-                },
-                "hoverFontFamily": {
-                    "description": "On hover font family",
-                    "displayName": "Font family",
-                    "type": {
-                        "enumeration": [
-                            {
-                                "displayName": "Arial",
-                                "value": "Arial"
-                            },
-                            {
-                                "displayName": "Arial Black",
-                                "value": "\"Arial Black\""
-                            },
-                            {
-                                "displayName": "Arial Unicode MS",
-                                "value": "\"Arial Unicode MS\""
-                            },
-                            {
-                                "displayName": "Calibri",
-                                "value": "Calibri"
-                            },
-                            {
-                                "displayName": "Cambria",
-                                "value": "Cambria"
-                            },
-                            {
-                                "displayName": "Cambria Math",
-                                "value": "\"Cambria Math\""
-                            },
-                            {
-                                "displayName": "Candara",
-                                "value": "Candara"
-                            },
-                            {
-                                "displayName": "Comic Sans MS",
-                                "value": "\"Comic Sans MS\""
-                            },
-                            {
-                                "displayName": "Consolas",
-                                "value": "Consolas"
-                            },
-                            {
-                                "displayName": "Constantia",
-                                "value": "Constantia"
-                            },
-                            {
-                                "displayName": "Corbel",
-                                "value": "Corbel"
-                            },
-                            {
-                                "displayName": "Courier New",
-                                "value": "\"Courier New\""
-                            },
-                            {
-                                "displayName": "Georgia",
-                                "value": "Georgia"
-                            },
-                            {
-                                "displayName": "Lucida Sans Unicode",
-                                "value": "\"Lucida Sans Unicode\""
-                            },
-                            {
-                                "displayName": "Segoe (Bold)",
-                                "value": "\"Segoe UI Bold\", wf_segoe-ui_bold, helvetica, arial, sans-serif"
-                            },
-                            {
-                                "displayName": "Segoe UI",
-                                "value": "\"Segoe UI\", wf_segoe-ui_normal, helvetica, arial, sans-serif"
-                            },
-                            {
-                                "displayName": "Segoe UI Light",
-                                "value": "\"Segoe UI Light\", wf_segoe-ui_bold, helvetica, arial, sans-serif"
-                            },
-                            {
-                                "displayName": "Symbol",
-                                "value": "Symbol"
-                            },
-                            {
-                                "displayName": "Tahoma",
-                                "value": "Tahoma"
-                            },
-                            {
-                                "displayName": "Times New Roman",
-                                "value": "\"Times New Roman\""
-                            },
-                            {
-                                "displayName": "Trebuchet MS",
-                                "value": "\"Trebuchet MS\""
-                            },
-                            {
-                                "displayName": "Verdana",
-                                "value": "Verdana"
-                            }
-                        ]
-                    }
-                },
-                "textSize": {
-                    "description": "Default text size",
-                    "displayName": "Text Size",
-                    "type": {
-                        "formatting": {
-                            "fontSize": true
-                        }
-                    }
-                },
-                "fontSize": {
-                    "description": "On hover text size",
-                    "displayName": "Text Size",
-                    "type": {
-                        "formatting": {
-                            "fontSize": true
-                        }
-                    }
-                },
-                "textPadding": {
-                    "description": "Default padding",
-                    "displayName": "Padding",
-                    "type": {
-                        "numeric": true
-                    }
-                },
-                "hoverTextPadding": {
-                    "description": "On hover padding",
-                    "displayName": "Padding",
-                    "type": {
-                        "numeric": true
-                    }
-                },
-                "defaultTextColor": {
-                    "description": "Default state color",
-                    "displayName": "Font Color",
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "hoverTextColor": {
-                    "description": "On hover color",
-                    "displayName": "Font Color",
+                "iconColorToggleOn": {
+                    "displayName": "Icon Color for Toggle On",
                     "type": {
                         "fill": {
                             "solid": {
@@ -378,6 +68,7 @@
                         }
                     }
                 }
+                
             }
         },
         "iconSettings": {
@@ -398,10 +89,7 @@
                     "displayName": "Icon Family",
                     "type": {
                         "enumeration": [
-                            {
-                                "displayName": "Use Icon Name Measure",
-                                "value": "UseIconNameMeasure"
-                            },
+                            
                             
                             {
                                 "displayName": "Buildings",

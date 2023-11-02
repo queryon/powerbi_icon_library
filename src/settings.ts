@@ -8,7 +8,7 @@ export class VisualSettings extends DataViewObjectsParser {
       //public dataPoint: dataPointSettings = new dataPointSettings();
       public iconSettings: iconSettings = new iconSettings();
       public textSettings: textSettings = new textSettings();
-      public actionSettings: actionSettings = new actionSettings();
+      public filterSettings: filterSettings = new filterSettings();
       }
 
      export class iconSettings{       
@@ -70,9 +70,14 @@ export class VisualSettings extends DataViewObjectsParser {
       }
        }
      }
-     export class actionSettings{
-      public show:boolean = false;
-      public url: string = "";
+     export class filterSettings{
+      public valueToggleOn:string="";
+      public toggleOnToolTip:string="";
+
+      public iconColorToggleOn: string = '#000';
+
+
+
      }
     export class textSettings{
       public show:boolean = false;

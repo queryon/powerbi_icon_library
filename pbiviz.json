@@ -4,8 +4,8 @@
         "displayName": "Icon Library",
         "guid": "iconsbyqueryon2ED14D8B4AED4D3384A40EAC399CE95F",
         "visualClassName": "Visual",
-        "version": "1.0.0.2",
-        "description": "Icon Library for inserting icons into Power BI reports with dynamic changes",
+        "version": "1.0.0.3",
+        "description": "Icon Library for inserting icons into Power BI reports with dynamic filtering",
         "supportUrl": "http://www.queryon.com",
         "gitHubUrl": "https://github.com/queryon/powerbi_icon_library"
     },

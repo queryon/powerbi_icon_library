@@ -21,8 +21,7 @@ import * as d3 from "d3";
 
 import IVisualEventService = powerbi.extensibility.IVisualEventService;
 
-import ITooltipService = powerbi.extensibility.ITooltipService;
-import { createTooltipServiceWrapper, ITooltipServiceWrapper, TooltipEventArgs } from "powerbi-visuals-utils-tooltiputils";
+import { createTooltipServiceWrapper, ITooltipServiceWrapper } from "powerbi-visuals-utils-tooltiputils";
 import VisualTooltipDataItem = powerbi.extensibility.VisualTooltipDataItem;
 
 
@@ -67,17 +66,27 @@ export class Visual implements IVisual {
     private cellValueTooltip: string = "";
     private TooltipTitle: string = "";
 
+    private FilterOn: string = "";
+    private FilterOff: string = "";
+    private dataSourceColumnIndex: number;
+    private dataViewIconNameValue;
 
-    
+    private isFilterApplied: boolean = false;  // New variable to track filter state
+
+
+
+
+
+
 
     private getTooltipData(): VisualTooltipDataItem[] {
-        if (this.TooltipTitle === "" || this.cellValueTooltip === "") {
+        if (this.visualSettings.filterSettings.toggleOnToolTip === "" ) {
             return null; // Don't return a tooltip item if there's no data
         }
-    
+
         return [{
-            displayName: this.TooltipTitle,
-            value: this.cellValueTooltip,
+            displayName: "",
+            value: this.visualSettings.filterSettings.toggleOnToolTip,
         }];
 
     }
@@ -92,9 +101,6 @@ export class Visual implements IVisual {
 
 
     constructor(visualOptions: VisualConstructorOptions) {
-
-
-        
 
         // Set up options
         this.target = visualOptions.element;
@@ -145,7 +151,6 @@ export class Visual implements IVisual {
 
         this.selectionManager = visualOptions.host.createSelectionManager();
 
-        console.log("yyyyy");
 
         // Initialize the Tooltip Service
         this.tooltipServiceWrapper = createTooltipServiceWrapper(
@@ -205,6 +210,8 @@ export class Visual implements IVisual {
 
         this.updateOptions = options;
         const dataViewIconName: DataView = options.dataViews[0];
+
+        this.dataViewIconNameValue = dataViewIconName;
         //const dataViewToolTip: DataView = options.dataViews[1];
 
         this.visualSettings = Visual.parseSettings(dataViewIconName);
@@ -218,12 +225,11 @@ export class Visual implements IVisual {
 
         if (dataViewIconName.table && dataViewIconName.table.rows.length > 0 && dataViewIconName.table.columns.length > 0) {
 
-        
+
             //This is a Icon Name
 
-            console.log(dataViewIconName)
-            
-        
+
+
 
             try {
                 cellValueIconName = options.dataViews[0].table.rows[0][0]?.toString() || "";
@@ -231,14 +237,14 @@ export class Visual implements IVisual {
                 console.error("Error retrieving cellValueIconName:", e);
                 cellValueIconName = ""; // Default value in case of an error
             }
-            
+
             try {
                 this.cellValueTooltip = options.dataViews[0].table.rows[0][1]?.toString() || "";
             } catch (e) {
                 console.error("Error retrieving cellValueTooltip:", e);
                 this.cellValueTooltip = ""; // Default value in case of an error
             }
-            
+
             try {
                 this.TooltipTitle = options.dataViews[0].table.columns[1]?.displayName || "";
             } catch (e) {
@@ -247,12 +253,23 @@ export class Visual implements IVisual {
             }
 
 
-            console.log(cellValueIconName)
-            console.log(this.cellValueTooltip)
-            console.log(this.TooltipTitle)
+            try {
+                this.FilterOn = options.dataViews[0].table.rows[0][1]?.toString() || "";
+            } catch (e) {
+                console.error("Error retrieving TooltipTitle:", e);
+                this.FilterOn = ""; // Default value in case of an error
+            }
 
 
-            
+
+
+            for (let i = 0; i < dataViewIconName.table.columns.length; i++) {
+                if (dataViewIconName.table.columns[i].roles['dataSource']) {
+                    this.dataSourceColumnIndex = i;
+                    break;
+                }
+            }
+
 
 
         }
@@ -266,6 +283,8 @@ export class Visual implements IVisual {
 
         this.drawVisual();
         this.events.renderingFinished(options);
+
+        
     }
 
     private drawVisual() {
@@ -280,15 +299,12 @@ export class Visual implements IVisual {
         }
         this.drawIcon();
 
-        if(this.TooltipTitle !== "" && this.cellValueTooltip !== "")
-        {
-            console.log("Asdasdasd")
+        if (this.visualSettings.filterSettings.toggleOnToolTip !== "" ) {
             this.bindTooltipToSVG();
 
         }
-        else
-        {
-            console.log("hidden")
+        else {
+            //console.log("hidden")
 
             this.tooltipServiceWrapper.hide();
         }
@@ -347,10 +363,22 @@ export class Visual implements IVisual {
         const svgNode = doc.documentElement; // This should be the root <svg> element.
         this.svgContainer.appendChild(svgNode);
 
+        
+        // Attach the click event to the SVG icon
+        svgNode.addEventListener('click', this.handleIconClick.bind(this));
+
         // Step 6: Adjusting SVG attributes if necessary. You can set styles or other attributes on the SVG element as needed by your application.
         svgNode.style.width = '100%';
         svgNode.style.height = '100%';
-        svgNode.style.fill = this.visualSettings.iconSettings.iconColor.toString();
+
+        if(this.isFilterApplied)
+        {
+            svgNode.style.fill = this.visualSettings.filterSettings.iconColorToggleOn.toString();
+        }
+        else
+        {
+            svgNode.style.fill = this.visualSettings.iconSettings.iconColor.toString();
+        }
 
 
 
@@ -525,5 +553,45 @@ export class Visual implements IVisual {
             properties,
             selector: null
         }];
+    }
+
+    private handleIconClick(): void {
+
+
+        // The actions you want to perform when the SVG icon is clicked on
+        console.log(this.dataViewIconNameValue);
+
+        if (this.isFilterApplied) {
+            //console.log("ON")
+            // Filter is currently applied, so remove all filters
+            this.host.applyJsonFilter(
+                null,
+                "general",
+                "filter",
+                powerbi.FilterAction.merge
+            );
+            this.isFilterApplied = false;  // Update filter state
+        } else {
+            // Filter is not currently applied, so apply it
+            const filterOnValue = [this.visualSettings.filterSettings.valueToggleOn.toString()];
+            console.log()         
+            console.log(filterOnValue)
+
+            const basicFilter = {
+                target: {
+                    table: this.dataViewIconNameValue.table.columns[this.dataSourceColumnIndex].expr.source.entity,
+                    column: this.dataViewIconNameValue.table.columns[this.dataSourceColumnIndex]?.displayName
+                },
+                operator: "In",
+                values: filterOnValue
+            };
+            this.host.applyJsonFilter(
+                basicFilter,
+                "general",
+                "filter",
+                powerbi.FilterAction.merge
+            );
+            this.isFilterApplied = true;  // Update filter state
+        }
     }
 }
